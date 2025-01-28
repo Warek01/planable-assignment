@@ -7,15 +7,20 @@ import {
    ScrollRestoration,
 } from 'react-router';
 import type { FC, PropsWithChildren } from 'react';
+import { Toaster } from 'react-hot-toast';
+import { Provider } from 'react-redux';
 
-import { AppLayout } from '~/components';
+import type { Route } from './+types/root';
+import { store } from '~/store';
+import { toastConfig } from '~/config/toast-config';
 
 import './app.css';
-import type { Route } from './+types/root';
-import { Provider } from 'react-redux';
-import { store } from '~/store';
 
 export const links: Route.LinksFunction = () => [
+   {
+      rel: 'icon',
+      href: '/favicon.png',
+   },
    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
    {
       rel: 'preconnect',
@@ -27,6 +32,8 @@ export const links: Route.LinksFunction = () => [
       href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap',
    },
 ];
+
+export const meta: Route.MetaFunction = () => [{ title: 'Planable gallery' }];
 
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
    return (
@@ -51,11 +58,12 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
 
 export default function App() {
    return (
-      <Provider store={store}>
-         <AppLayout>
+      <>
+         <Toaster {...toastConfig} />
+         <Provider store={store}>
             <Outlet />
-         </AppLayout>
-      </Provider>
+         </Provider>
+      </>
    );
 }
 
