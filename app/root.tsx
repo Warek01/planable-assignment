@@ -12,6 +12,8 @@ import { AppLayout } from '~/components';
 
 import './app.css';
 import type { Route } from './+types/root';
+import { Provider } from 'react-redux';
+import { store } from '~/store';
 
 export const links: Route.LinksFunction = () => [
    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
@@ -49,9 +51,11 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
 
 export default function App() {
    return (
-      <AppLayout>
-         <Outlet />
-      </AppLayout>
+      <Provider store={store}>
+         <AppLayout>
+            <Outlet />
+         </AppLayout>
+      </Provider>
    );
 }
 
