@@ -5,10 +5,3 @@
       'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
       'Noto Color Emoji';
 }
-
-html,
-body {
-   @media (prefers-color-scheme: dark) {
-      color-scheme: dark;
-   }
-}
