@@ -9,14 +9,15 @@ const CreateFolderInput: FC = () => {
    const allFolderNames = useAppSelector(selectAllFolderNames);
    const [newFolderName, setNewFolderName] = useState('');
 
+   const isValid = !!newFolderName.trim();
    const folderExists = allFolderNames.includes(newFolderName);
 
    const handleSubmit = () => {
-      if (folderExists) {
+      if (folderExists || !isValid) {
          return;
       }
 
-      dispatch(createFolder({ folderName: newFolderName }));
+      dispatch(createFolder({ folderName: newFolderName.trim() }));
       setNewFolderName('');
    };
 
@@ -37,7 +38,9 @@ const CreateFolderInput: FC = () => {
                Create
             </Button>
          </Flex>
-         {folderExists && <Text>{newFolderName} already exists</Text>}
+         {folderExists && isValid && (
+            <Text>{newFolderName} already exists</Text>
+         )}
       </Box>
    );
 };
