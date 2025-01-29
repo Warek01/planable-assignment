@@ -1,33 +1,24 @@
-import { type FC, type PropsWithChildren, useEffect } from 'react';
-import { Box } from '@radix-ui/themes';
-import { Outlet, useLocation, useParams } from 'react-router';
+import { type FC, type PropsWithChildren } from 'react';
+import { Box, Flex, ScrollArea } from '@radix-ui/themes';
+import { Outlet } from 'react-router';
 
 import { Sidebar, Topbar } from '~/components';
-import { useAppDispatch } from '~/hooks/redux';
 
 const AppLayout: FC<PropsWithChildren> = ({ children }) => {
-   // const location = useLocation();
-   // const dispatch = useAppDispatch();
-   // const params = useParams();
-   //
-   // useEffect(() => {
-   //    console.log(location, params);
-   // }, [location]);
-
    return (
-      <Box>
-         <Box maxWidth="232px">
+      <Flex width="100vw" height="100vh">
+         <Box minWidth="232px" maxWidth="232px" position="relative">
             <Sidebar />
          </Box>
-         <Box>
-            <Box>
-               <Topbar />
+         <Flex direction="column" flexGrow="1">
+            <Topbar />
+            <Box overflowY="auto" flexGrow="1">
+               <ScrollArea>
+                  <Outlet />
+               </ScrollArea>
             </Box>
-            <Box height="300px" width="500px">
-               <Outlet />
-            </Box>
-         </Box>
-      </Box>
+         </Flex>
+      </Flex>
    );
 };
 

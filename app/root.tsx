@@ -12,9 +12,8 @@ import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
 import { Theme, ThemePanel } from '@radix-ui/themes';
 
-import type { Route } from './+types/root';
-
 import './app.css';
+import type { Route } from './+types/root';
 import { store } from './store';
 import { toastConfig } from './config/toast-config';
 import { themeConfig } from './config/theme-config';
@@ -65,19 +64,21 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
    );
 };
 
-export default function App() {
+const App: FC = () => {
    return (
       <Theme {...themeConfig}>
          <Toaster {...toastConfig} />
-         <ThemePanel />
+         {/*{import.meta.env.DEV && <ThemePanel />}*/}
          <Provider store={store}>
             <Outlet />
          </Provider>
       </Theme>
    );
-}
+};
 
-export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
+export default App;
+
+export const ErrorBoundary: FC<Route.ErrorBoundaryProps> = ({ error }) => {
    let message = 'Oops!';
    let details = 'An unexpected error occurred.';
    let stack: string | undefined;
@@ -104,4 +105,4 @@ export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
          )}
       </main>
    );
-}
+};

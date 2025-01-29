@@ -1,5 +1,5 @@
 import { type FC, useMemo } from 'react';
-import { Grid } from '@radix-ui/themes';
+import { Flex, Grid } from '@radix-ui/themes';
 
 import { useAppSelector } from '~/hooks/redux';
 import type { Folder } from '~/features/media/types/folder';
@@ -27,9 +27,17 @@ const MediaGrid: FC<MediaItemsGridProps> = ({ folder }) => {
    );
 
    return (
-      <Grid>
+      <Grid
+         columns={{ sm: '3', md: '4', lg: '5', xl: '6' }}
+         gap="4"
+         p="2"
+         align="center"
+         justify="center"
+      >
          {filteredItems.map((item) => (
-            <MediaGridItem item={item} key={item.id} />
+            <Flex justify="center" p="1" key={item.id}>
+               <MediaGridItem item={item} />
+            </Flex>
          ))}
       </Grid>
    );

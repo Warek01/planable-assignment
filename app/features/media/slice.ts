@@ -1,4 +1,8 @@
-import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import {
+   createSelector,
+   createSlice,
+   type PayloadAction,
+} from '@reduxjs/toolkit';
 import * as uuid from 'uuid';
 
 import type { Folder } from '~/features/media/types/folder';
@@ -7,6 +11,7 @@ import type { RootState } from '~/store';
 import { mockFolders } from '~/mocks/folders';
 import { MediaItemType } from '~/features/media/config/media-item-type';
 import { mockItems } from '~/mocks/items';
+import { allMediaTypes } from '~/features/media/config/all-media-types';
 
 interface MediaState {
    folders: Folder[];
@@ -150,6 +155,12 @@ export const mediaSlice = createSlice({
          const { filter } = action.payload;
          state.activeFilters = state.activeFilters.concat(filter);
       },
+      clearFilters(state) {
+         state.activeFilters = [];
+      },
+      fillFilters(state) {
+         state.activeFilters = allMediaTypes.concat();
+      },
       removeFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
          const { filter } = action.payload;
          state.activeFilters = state.activeFilters.filter((f) => f !== filter);
@@ -165,6 +176,8 @@ export const {
    moveItem,
    createFolder,
    deleteFolder,
+   fillFilters,
+   clearFilters,
    setActiveFolder,
    removeFilter,
    applyFilter,
@@ -178,20 +191,29 @@ export const selectItems = (state: RootState): MediaItem[] => state.media.items;
 export const selectSelectedItemIds = (state: RootState): string[] =>
    state.media.selectedItemIds;
 
-export const selectSelectedFolder = (state: RootState): Folder | undefined =>
-   state.media.folders.find(
-      (folder) => folder.id === state.media.selectedFolderId,
-   );
+export const selectSelectedFolderId = (state: RootState): string | undefined =>
+   state.media.selectedFolderId;
 
-export const selectFolder =
-   (folderId: string) =>
-   (state: RootState): Folder | undefined =>
-      state.media.folders.find((stateFolder) => stateFolder.id === folderId);
+export const selectSelectedFolder = createSelector(
+   [selectFolders, selectSelectedFolderId],
+   (folders, selectedFolderId) =>
+      folders.find((folder) => folder.id === selectedFolderId),
+);
+
+export const selectFolder = createSelector(
+   [selectFolders, (state: RootState, folderId: string) => folderId],
+   (folders, folderId) =>
+      folders.find((stateFolder) => stateFolder.id === folderId),
+);
 
 export const selectActiveFilters = (state: RootState): MediaItemType[] =>
    state.media.activeFilters;
 
-export const selectItem =
-   (itemId: string) =>
-   (state: RootState): MediaItem | undefined =>
-      state.media.items.find((stateItem) => stateItem.id === itemId);
+export const selectItem = createSelector(
+   [selectItems, (state: RootState, itemId: string) => itemId],
+   (items, itemId) => items.find((stateItem) => stateItem.id === itemId),
+);
+
+export const selectAllFolderNames = createSelector([selectFolders], (folders) =>
+   folders.map((f) => f.name),
+);

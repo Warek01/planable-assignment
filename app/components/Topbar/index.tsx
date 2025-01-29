@@ -1,8 +1,12 @@
 import type { FC } from 'react';
-import { Box } from '@radix-ui/themes';
+import { Box, Flex } from '@radix-ui/themes';
 
 const Topbar: FC = () => {
-   return <Box>Topbar</Box>;
+   return (
+      <Flex flexShrink="0" height="64px">
+         Topbar
+      </Flex>
+   );
 };
 
 export default Topbar;

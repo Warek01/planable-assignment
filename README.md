@@ -3,3 +3,4 @@
 - filtering should be on server side
 - introduce folder hierarchy
 - use folder names in hierarchy as slug like http://app/folder-a/folder-b instead of folder id
+- lazy load thumbnails

@@ -2,13 +2,11 @@ import { type ChangeEventHandler, type FC, useState } from 'react';
 import { Box, Button, Flex, Text, TextField } from '@radix-ui/themes';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { createFolder } from '~/features/media/slice';
+import { createFolder, selectAllFolderNames } from '~/features/media/slice';
 
 const CreateFolderInput: FC = () => {
    const dispatch = useAppDispatch();
-   const allFolderNames = useAppSelector((state) =>
-      state.media.folders.map((f) => f.name),
-   );
+   const allFolderNames = useAppSelector(selectAllFolderNames);
    const [newFolderName, setNewFolderName] = useState('');
 
    const folderExists = allFolderNames.includes(newFolderName);
@@ -19,6 +17,7 @@ const CreateFolderInput: FC = () => {
       }
 
       dispatch(createFolder({ folderName: newFolderName }));
+      setNewFolderName('');
    };
 
    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {

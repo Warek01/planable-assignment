@@ -8,6 +8,12 @@ export const mockFolders: Folder[] = [
          '7b577a7d-a708-4628-8ee4-0fb5b5d0f3d6',
          '0388dd3d-1d76-40f3-8fbe-5de1c3dca13c',
          '463821e4-ccb4-4619-a3fb-fd598b45816b',
+         '463821e4-ccb4-4619-a3fb-fd598b45716b',
+         '463821e4-ccb4-4619-a3fb-ad598b45816b',
+         '463821e4-ccb4-3219-a3fb-fd598b45716b',
+         '463821e4-ccb4-4615-a3fb-fd598b45716b',
+         '563821e4-ccb4-4615-a3fb-fd598b45716b',
+         '663821e4-ccb4-4615-a3fb-fd598b45716b',
       ],
    },
    {

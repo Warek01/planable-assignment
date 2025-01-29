@@ -1,61 +1,100 @@
-import type { FC } from 'react';
-import { Flex } from '@radix-ui/themes';
+import { type FC, useMemo, useState } from 'react';
+import { Checkbox, Flex, Text, type CheckboxProps } from '@radix-ui/themes';
+import { useSelector } from 'react-redux';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
 import {
    applyFilter,
+   clearFilters,
+   fillFilters,
    removeFilter,
    selectActiveFilters,
    selectItems,
    selectSelectedFolder,
 } from '~/features/media/slice';
-import { Accordion } from '~/components';
 import { MediaItemType } from '~/features/media/config/media-item-type';
+import { Chevron } from '~/components/icons';
+import { cn } from '~/utils/cn';
+import { allMediaTypes } from '~/features/media/config/all-media-types';
 
 import FilterListItem from './FilterListItem';
-import { useSelector } from 'react-redux';
 
-export interface FilterListProps {}
-
-const allFilters: MediaItemType[] = [
-   MediaItemType.IMAGE,
-   MediaItemType.VIDEO,
-   MediaItemType.GIF,
-];
-
-const FilterList: FC<FilterListProps> = ({}) => {
+const FilterList: FC = () => {
    const appliedFilters = useAppSelector(selectActiveFilters);
    const selectedFolder = useSelector(selectSelectedFolder);
    const allItems = useAppSelector(selectItems);
    const dispatch = useAppDispatch();
+   const [isOpen, setIsOpen] = useState(true);
 
-   const handleSelect = (filter: MediaItemType) => {
-      const action = appliedFilters.includes(filter)
-         ? removeFilter({ filter })
-         : applyFilter({ filter });
+   const allFiltersCheckmarkValue = useMemo<CheckboxProps['checked']>(() => {
+      if (!appliedFilters.length) {
+         return false;
+      }
+      if (appliedFilters.length === allMediaTypes.length) {
+         return true;
+      }
+      return 'indeterminate';
+   }, [appliedFilters]);
+
+   const handleSelect = (type: MediaItemType) => {
+      const action = appliedFilters.includes(type)
+         ? removeFilter({ filter: type })
+         : applyFilter({ filter: type });
 
       dispatch(action);
    };
 
-   const filterListItemElements = allFilters.map((filter) => (
+   const handleAllFiltersClick = () => {
+      const action = allFiltersCheckmarkValue ? clearFilters() : fillFilters();
+      dispatch(action);
+   };
+
+   const handleVisibilityToggle = () => {
+      setIsOpen((o) => !o);
+   };
+
+   const filterListItemElements = allMediaTypes.map((type) => (
       <FilterListItem
-         key={filter}
-         type={filter}
-         selected={appliedFilters.includes(filter)}
+         key={type}
+         type={type}
+         selected={appliedFilters.includes(type)}
          onSelect={handleSelect}
          count={
             allItems.filter(
                (item) =>
                   selectedFolder?.itemIds.includes(item.id) &&
-                  item.type === filter,
+                  item.type === type,
             ).length ?? 0
          }
       />
    ));
 
    return (
-      <Flex>
-         <Accordion defaultOpened>{filterListItemElements}</Accordion>
+      <Flex direction="column" gapY="2">
+         <Flex justify="between" align="center">
+            <Flex
+               align="center"
+               gap="2"
+               onClick={handleVisibilityToggle}
+               className="cursor-pointer"
+            >
+               <Text wrap="nowrap">Media type</Text>
+               <Chevron
+                  className={cn('duration-100', isOpen ? '' : 'rotate-180')}
+               />
+            </Flex>
+            <Checkbox
+               checked={allFiltersCheckmarkValue}
+               onClick={handleAllFiltersClick}
+            />
+         </Flex>
+         <Flex
+            direction="column"
+            overflow="hidden"
+            className={cn('duration-100', isOpen ? 'max-h-[300px]' : 'max-h-0')}
+         >
+            {filterListItemElements}
+         </Flex>
       </Flex>
    );
 };

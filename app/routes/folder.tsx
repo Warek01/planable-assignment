@@ -8,7 +8,7 @@ import { MediaGrid } from '~/features/media/components';
 
 const FolderPage: FC<Route.ComponentProps> = ({ params }) => {
    const { folderId } = params;
-   const folder = useAppSelector(selectFolder(folderId));
+   const folder = useAppSelector((state) => selectFolder(state, folderId));
    const dispatch = useAppDispatch();
 
    // Sync selected folder with store
