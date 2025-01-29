@@ -1,28 +1,37 @@
-import { type FC } from 'react';
+import { type FC, useEffect } from 'react';
+import { Box, Heading } from '@radix-ui/themes';
 
 import type { Route } from './+types/folder';
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { selectFolder } from '~/features/media/slice';
+import { selectFolder, setActiveFolder } from '~/features/media/slice';
+import { MediaGrid } from '~/features/media/components';
 
 const FolderPage: FC<Route.ComponentProps> = ({ params }) => {
-   const folderName = params.folder;
-   const folder = useAppSelector(selectFolder(folderName));
+   const { folderId } = params;
+   const folder = useAppSelector(selectFolder(folderId));
    const dispatch = useAppDispatch();
+
+   // Sync selected folder with store
+   useEffect(() => {
+      dispatch(setActiveFolder({ folderId: folder?.id }));
+
+      return () => {
+         dispatch(setActiveFolder({ folderId: undefined }));
+      };
+   }, [folderId]);
 
    if (!folder) {
       return (
-         <div>
-            <h1>No such folder "{folderName}"</h1>
-         </div>
+         <Box>
+            <Heading>No such folder {folderId}</Heading>
+         </Box>
       );
    }
 
    return (
-      <div>
-         {folder.items.map((item) => (
-            <div key={item.name}>{item.name}</div>
-         ))}
-      </div>
+      <Box>
+         <MediaGrid folder={folder} />
+      </Box>
    );
 };
 

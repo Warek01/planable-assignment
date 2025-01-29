@@ -1,3 +1,4 @@
+import '@radix-ui/themes/styles.css';
 import {
    isRouteErrorResponse,
    Links,
@@ -9,17 +10,19 @@ import {
 import type { FC, PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
+import { Theme, ThemePanel } from '@radix-ui/themes';
 
 import type { Route } from './+types/root';
-import { store } from '~/store';
-import { toastConfig } from '~/config/toast-config';
 
 import './app.css';
+import { store } from './store';
+import { toastConfig } from './config/toast-config';
+import { themeConfig } from './config/theme-config';
 
 export const links: Route.LinksFunction = () => [
    {
       rel: 'icon',
-      href: '/favicon.png',
+      href: '/icon.png',
    },
    { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
    {
@@ -33,7 +36,13 @@ export const links: Route.LinksFunction = () => [
    },
 ];
 
-export const meta: Route.MetaFunction = () => [{ title: 'Planable gallery' }];
+export const meta: Route.MetaFunction = () => [
+   { title: 'Media gallery' },
+   {
+      name: 'description',
+      content: 'Simple media gallery that allows media files management',
+   },
+];
 
 export const Layout: FC<PropsWithChildren> = ({ children }) => {
    return (
@@ -58,12 +67,13 @@ export const Layout: FC<PropsWithChildren> = ({ children }) => {
 
 export default function App() {
    return (
-      <>
+      <Theme {...themeConfig}>
          <Toaster {...toastConfig} />
+         <ThemePanel />
          <Provider store={store}>
             <Outlet />
          </Provider>
-      </>
+      </Theme>
    );
 }
 

@@ -1,19 +1,27 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
+import * as uuid from 'uuid';
 
 import type { Folder } from '~/features/media/types/folder';
 import type { MediaItem } from '~/features/media/types/media-item';
 import type { RootState } from '~/store';
 import { mockFolders } from '~/mocks/folders';
+import { MediaItemType } from '~/features/media/config/media-item-type';
+import { mockItems } from '~/mocks/items';
 
-// Simple hierarchy by direct reference
-// A more fine-grained and performant approach would be having a separate slice for media items
-// and keeping the reference by ID in the folder
 interface MediaState {
    folders: Folder[];
+   items: MediaItem[];
+   selectedFolderId: string | undefined;
+   activeFilters: MediaItemType[];
+   selectedItemIds: string[];
 }
 
 const initialState: MediaState = {
    folders: mockFolders,
+   items: mockItems,
+   selectedItemIds: [],
+   selectedFolderId: undefined,
+   activeFilters: [MediaItemType.IMAGE, MediaItemType.VIDEO, MediaItemType.GIF],
 };
 
 export const MEDIA_SLICE_NAME = 'media';
@@ -24,49 +32,65 @@ export const mediaSlice = createSlice({
    reducers: {
       addItem(
          state,
-         action: PayloadAction<{ item: MediaItem; folderName: string }>,
+         action: PayloadAction<{ item: MediaItem; folderId: string }>,
       ) {
-         const { folderName, item } = action.payload;
+         const { item, folderId } = action.payload;
+
+         // Add to folder
          state.folders = state.folders.map((folder) =>
-            folder.name === folderName
-               ? { ...folder, items: folder.items.concat(item) }
+            folder.id === folderId
+               ? { ...folder, itemIds: folder.itemIds.concat(item.id) }
                : folder,
          );
+
+         // Add to items list
+         state.items = state.items.concat(item);
       },
       deleteItem(
          state,
-         action: PayloadAction<{ item: MediaItem; folderName: string }>,
+         action: PayloadAction<{ item: MediaItem; folderId: string }>,
       ) {
-         const { folderName, item } = action.payload;
+         const { folderId, item } = action.payload;
+
+         // Remove from folder
          state.folders = state.folders.map((folder) =>
-            folder.name === folderName
+            folder.id === folderId
                ? {
                     ...folder,
-                    item: folder.items.filter((i) => i !== item),
+                    itemIds: folder.itemIds.filter((id) => id !== item.id),
                  }
                : folder,
+         );
+
+         // Remove from items list
+         state.items = state.items.filter(
+            (stateItem) => stateItem.id !== item.id,
          );
       },
       moveItem(
          state,
          action: PayloadAction<{
             item: MediaItem;
-            srcFolderName: string;
-            dstFolderName: string;
+            srcFolderId: string;
+            dstFolderId: string;
          }>,
       ) {
-         const { item, dstFolderName, srcFolderName } = action.payload;
+         const { item, dstFolderId, srcFolderId } = action.payload;
+
          state.folders = state.folders.map((folder) => {
-            if (folder.name === srcFolderName) {
+            // Remove from initial folder
+            if (folder.id === srcFolderId) {
                return {
                   ...folder,
-                  items: folder.items.filter((i) => i.name !== item.name),
+                  itemsIds: folder.itemIds.filter((id) => id !== item.id),
                };
             }
-            if (folder.name === dstFolderName) {
+
+            // Add to new folder
+            if (folder.name === dstFolderId) {
                return {
                   ...folder,
-                  items: folder.items.concat(item),
+                  items: folder.itemIds.concat(item.id),
                };
             }
 
@@ -76,23 +100,19 @@ export const mediaSlice = createSlice({
       renameItem(
          state,
          action: PayloadAction<{
-            itemName: string;
-            folderName: string;
+            item: MediaItem;
             newName: string;
          }>,
       ) {
-         const { itemName, newName, folderName } = action.payload;
-         state.folders = state.folders.map((folder) =>
-            folder.name === folderName
+         const { newName, item } = action.payload;
+
+         state.items = state.items.map((stateItem) =>
+            stateItem.id === item.id
                ? {
-                    ...folder,
-                    items: folder.items.map((item) =>
-                       item.name === itemName
-                          ? { ...item, name: newName }
-                          : item,
-                    ),
+                    ...stateItem,
+                    name: newName,
                  }
-               : folder,
+               : stateItem,
          );
       },
       createFolder(
@@ -102,7 +122,11 @@ export const mediaSlice = createSlice({
          }>,
       ) {
          const { folderName } = action.payload;
-         state.folders = state.folders.concat({ name: folderName, items: [] });
+         state.folders = state.folders.concat({
+            name: folderName,
+            itemIds: [],
+            id: uuid.v4(),
+         });
       },
       deleteFolder(
          state,
@@ -115,6 +139,21 @@ export const mediaSlice = createSlice({
             (folder) => folder.name !== folderName,
          );
       },
+      setActiveFolder(
+         state,
+         action: PayloadAction<{ folderId: string | undefined }>,
+      ) {
+         const { folderId } = action.payload;
+         state.selectedFolderId = folderId;
+      },
+      applyFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
+         const { filter } = action.payload;
+         state.activeFilters = state.activeFilters.concat(filter);
+      },
+      removeFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
+         const { filter } = action.payload;
+         state.activeFilters = state.activeFilters.filter((f) => f !== filter);
+      },
    },
 });
 
@@ -126,18 +165,33 @@ export const {
    moveItem,
    createFolder,
    deleteFolder,
+   setActiveFolder,
+   removeFilter,
+   applyFilter,
 } = mediaSlice.actions;
 
-export const selectFolders = (state: RootState) => state.media.folders;
+export const selectFolders = (state: RootState): Folder[] =>
+   state.media.folders;
+
+export const selectItems = (state: RootState): MediaItem[] => state.media.items;
+
+export const selectSelectedItemIds = (state: RootState): string[] =>
+   state.media.selectedItemIds;
+
+export const selectSelectedFolder = (state: RootState): Folder | undefined =>
+   state.media.folders.find(
+      (folder) => folder.id === state.media.selectedFolderId,
+   );
 
 export const selectFolder =
-   (folderName: string) =>
+   (folderId: string) =>
    (state: RootState): Folder | undefined =>
-      state.media.folders.find((f) => f.name === folderName);
+      state.media.folders.find((stateFolder) => stateFolder.id === folderId);
+
+export const selectActiveFilters = (state: RootState): MediaItemType[] =>
+   state.media.activeFilters;
 
 export const selectItem =
-   (itemName: string, folderName: string) =>
+   (itemId: string) =>
    (state: RootState): MediaItem | undefined =>
-      state.media.folders
-         .find((f) => f.name === folderName)
-         ?.items.find((i) => i.name === itemName);
+      state.media.items.find((stateItem) => stateItem.id === itemId);

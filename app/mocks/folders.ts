@@ -1,50 +1,23 @@
 import type { Folder } from '~/features/media/types/folder';
-import { MediaItemType } from '~/features/media/config/media-item-type';
 
 export const mockFolders: Folder[] = [
    {
       name: 'folder-1',
-      items: [
-         {
-            name: 'img1.jpg',
-            type: MediaItemType.IMAGE,
-            url: 'https://picsum.photos/1/200/300',
-            thumbnailUrl: 'https://picsum.photos/1/200/300',
-         },
-         {
-            name: 'img2.jpg',
-            type: MediaItemType.IMAGE,
-            url: 'https://picsum.photos/2/200/300',
-            thumbnailUrl: 'https://picsum.photos/2/200/300',
-         },
-         {
-            name: 'img3.jpg',
-            type: MediaItemType.IMAGE,
-            url: 'https://picsum.photos/3/200/300',
-            thumbnailUrl: 'https://picsum.photos/3/200/300',
-         },
+      id: 'afd5aa31-75e6-4225-afa4-76aff33753f8',
+      itemIds: [
+         '7b577a7d-a708-4628-8ee4-0fb5b5d0f3d6',
+         '0388dd3d-1d76-40f3-8fbe-5de1c3dca13c',
+         '463821e4-ccb4-4619-a3fb-fd598b45816b',
       ],
    },
    {
       name: 'folder-2',
-      items: [
-         {
-            name: 'img1.jpg',
-            type: MediaItemType.IMAGE,
-            url: 'https://picsum.photos/4/200/300',
-            thumbnailUrl: 'https://picsum.photos/4/200/300',
-         },
-      ],
+      id: '4ac8ca09-e9c4-4baf-94f2-855bf78911d6',
+      itemIds: ['43b33bdb-37e0-4846-a54f-511eb23e1d36'],
    },
    {
       name: 'folder-3',
-      items: [
-         {
-            name: 'img1.jpg',
-            type: MediaItemType.IMAGE,
-            url: 'https://picsum.photos/5/200/300',
-            thumbnailUrl: 'https://picsum.photos/5/200/300',
-         },
-      ],
+      id: 'e3e4ec5e-a85a-4eb3-831f-253427799a90',
+      itemIds: ['4c18510e-378e-4dc2-b30e-9e70f1409355'],
    },
 ];

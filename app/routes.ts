@@ -8,6 +8,7 @@ import {
 export default [
    layout('./components/AppLayout/index.tsx', [
       index('./routes/home.tsx'),
-      route('/:folder', './routes/folder.tsx'),
+      route('/:folderId', './routes/folder.tsx'),
+      route('/*', './routes/not-found.tsx'),
    ]),
 ] satisfies RouteConfig;
