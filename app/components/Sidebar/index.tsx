@@ -26,9 +26,7 @@ const Sidebar: FC = () => {
                <Text size="2" weight="medium" className="px-2">
                   Folders
                </Text>
-               <ScrollArea>
-                  <FolderNavigation />
-               </ScrollArea>
+               <FolderNavigation />
                <CreateFolderInput />
             </Flex>
 

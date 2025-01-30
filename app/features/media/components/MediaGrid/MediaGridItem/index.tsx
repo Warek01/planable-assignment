@@ -11,6 +11,7 @@ import {
 
 import ItemThumbnail from './ItemThumbnail';
 import ItemName from './ItemName';
+import { cn } from '~/utils/cn';
 
 export interface MediaGridItemProps {
    item: MediaItem;
@@ -29,6 +30,8 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
       [selectedItemIds, item.id],
    );
 
+   const isSelected = selectOrder !== -1;
+
    const handleSelection = () => {
       const action =
          selectOrder === -1
@@ -37,11 +40,33 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
       dispatch(action);
    };
 
+   const selectBox = useMemo(
+      () => (
+         <div
+            className={cn(
+               'absolute left-1 bottom-1 cursor-pointer w-5 h-5 rounded-md flex items-center justify-center',
+               'transition-[background] duration-100',
+               isSelected
+                  ? 'border-primary bg-primary'
+                  : 'group-hover:border-[1.5px] group-hover:border-white',
+            )}
+            onClick={handleSelection}
+         >
+            <Text size="1" className="text-white">
+               {isSelected ? selectOrder + 1 : ''}
+            </Text>
+         </div>
+      ),
+      [isSelected, selectOrder],
+   );
+
    return (
       <Box width="100%">
-         <ItemThumbnail src={item.thumbnailUrl} />
-         <ItemName item={item} />
-         <Text onClick={handleSelection}>{selectOrder}</Text>
+         <Box position="relative" className="group">
+            <ItemThumbnail src={item.thumbnailUrl} isSelected={isSelected} />
+            {selectBox}
+         </Box>
+         <ItemName item={item} isSelected={isSelected} />
       </Box>
    );
 };

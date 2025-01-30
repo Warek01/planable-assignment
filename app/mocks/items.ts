@@ -52,6 +52,20 @@ export const mockItems: MediaItem[] = [
       id: '563821e4-ccb4-4615-a3fb-fd598b45716b',
    },
    {
+      name: 'video.mp4',
+      type: MediaItemType.VIDEO,
+      url: 'https://picsum.photos/id/14/500/500',
+      thumbnailUrl: 'https://picsum.photos/id/14/500/500',
+      id: '563821e4-ccb4-4615-a3fb-fd59bgb45716b',
+   },
+   {
+      name: 'test gif.gif',
+      type: MediaItemType.GIF,
+      url: 'https://picsum.photos/id/19/300/350',
+      thumbnailUrl: 'https://picsum.photos/id/19/300/350',
+      id: '563821e4-ccb4-4615-a3fa-fd59bgb45716b',
+   },
+   {
       name: 'test.jpg',
       type: MediaItemType.IMAGE,
       url: 'https://picsum.photos/id/14/100/300',

@@ -6,9 +6,10 @@ import { cn } from '~/utils/cn';
 
 export interface ItemThumbnailProps {
    src: string;
+   isSelected: boolean;
 }
 
-const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
+const ItemThumbnail: FC<ItemThumbnailProps> = ({ src, isSelected }) => {
    const [thumbnailLoaded, setThumbnailLoaded] = useState(false);
    const [isError, setIsError] = useState(false);
    const ref = useRef<HTMLImageElement>(null);
@@ -36,7 +37,17 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
    }, [src]);
 
    return (
-      <Flex align="center" justify="center" className="aspect-square relative">
+      <Flex
+         align="center"
+         justify="center"
+         p="1"
+         className={cn(
+            'aspect-square relative rounded-lg duration-100 border',
+            isSelected
+               ? 'bg-primary/10 border-primary'
+               : 'border-transparent group-hover:bg-secondary/20',
+         )}
+      >
          {!thumbnailLoaded && (
             <Flex align="center" justify="center" position="absolute">
                <Spinner size={{ initial: '1', md: '2', lg: '3' }} />
@@ -53,9 +64,7 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
             ref={ref}
             src={src}
             alt="image thumbnail"
-            className={cn(
-               'w-auto h-auto max-w-full max-h-full transition-opacity duration-200',
-            )}
+            className="w-auto h-auto max-w-full max-h-full duration-100 border-2 border-secondary/20 group-hover:border-secondary/30 rounded-md"
          />
       </Flex>
    );
