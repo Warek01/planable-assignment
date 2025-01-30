@@ -17,6 +17,7 @@ import type { Route } from './+types/root';
 import { store } from './store';
 import { toastConfig } from './config/toast-config';
 import { themeConfig } from './config/theme-config';
+import FileDnDHandler from '~/features/media/components/FileDnDHandler';
 
 export const links: Route.LinksFunction = () => [
    {
@@ -68,9 +69,10 @@ const App: FC = () => {
    return (
       <Theme {...themeConfig}>
          <Toaster {...toastConfig} />
-         {/*{import.meta.env.DEV && <ThemePanel />}*/}
          <Provider store={store}>
-            <Outlet />
+            <FileDnDHandler>
+               <Outlet />
+            </FileDnDHandler>
          </Provider>
       </Theme>
    );

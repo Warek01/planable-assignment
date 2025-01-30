@@ -8,3 +8,7 @@
    --color-secondary: #232426;
    --color-primary: #1677ff;
 }
+
+.dnd-overflow-hidden {
+   overflow: hidden !important;
+}

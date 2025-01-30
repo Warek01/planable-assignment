@@ -1,5 +1,5 @@
 import { type FC, memo } from 'react';
-import { Flex } from '@radix-ui/themes';
+import { Box, Flex } from '@radix-ui/themes';
 
 import { useAppSelector } from '~/hooks/redux';
 import { selectFolders } from '~/features/media/slices/media-data-slice';
@@ -10,22 +10,28 @@ import FolderItem from './FolderItem';
 export interface FolderListProps {
    onSelect: (folder: Folder) => void;
    selected?: Folder;
+   droppable?: boolean;
 }
 
-const FolderList: FC<FolderListProps> = ({ onSelect, selected }) => {
+const FolderList: FC<FolderListProps> = ({
+   onSelect,
+   selected,
+   droppable = false,
+}) => {
    const folders = useAppSelector(selectFolders);
 
    return (
-      <Flex direction="column" gapY="1" overflow="hidden">
+      <Box overflow="auto" className="hide-overflow-on-dnd">
          {folders.map((folder) => (
             <FolderItem
+               droppable={droppable}
                onSelect={onSelect}
                isSelected={folder === selected}
                folder={folder}
                key={folder.name}
             />
          ))}
-      </Flex>
+      </Box>
    );
 };
 

@@ -1,6 +1,6 @@
 import { type FC } from 'react';
 import { NavLink } from 'react-router';
-import { Box, Flex, Avatar, Text, ScrollArea } from '@radix-ui/themes';
+import { Box, Flex, Avatar, Text } from '@radix-ui/themes';
 
 import { AppRoute } from '~/config/app-route';
 import {
@@ -22,7 +22,7 @@ const Sidebar: FC = () => {
                </Flex>
             </NavLink>
 
-            <Flex direction="column" gapY="4" overflow="hidden">
+            <Flex direction="column" gapY="4" overflow="auto">
                <Text size="2" weight="medium" className="px-2">
                   Folders
                </Text>

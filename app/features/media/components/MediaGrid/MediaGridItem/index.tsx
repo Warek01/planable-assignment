@@ -1,5 +1,7 @@
 import { type FC, useMemo, useState } from 'react';
 import { Box, Text } from '@radix-ui/themes';
+import { useDraggable } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 import type { MediaItem } from '~/features/media/types/media-item';
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
@@ -10,10 +12,10 @@ import {
 } from '~/features/media/slices/media-ui-state-slice';
 import { cn } from '~/utils/cn';
 import { Expand } from '~/components/icons';
+import BackdropMediaPlayer from '~/features/media/components/BackdropMediaPlayer';
 
 import ItemThumbnail from './ItemThumbnail';
 import ItemName from './ItemName';
-import BackdropMediaPlayer from '~/features/media/components/BackdropMediaPlayer';
 
 export interface MediaGridItemProps {
    item: MediaItem;
@@ -23,6 +25,9 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
    const dispatch = useAppDispatch();
    const selectedItemIds = useAppSelector(selectSelectedItemIds);
    const [expanded, setExpanded] = useState(false);
+   const { listeners, setNodeRef, transform, isDragging } = useDraggable({
+      id: item.id,
+   });
 
    // The order in which the item was selected
    const selectOrder = useMemo(
@@ -81,9 +86,21 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
    );
 
    return (
-      <Box width="100%">
+      <div
+         className="w-full"
+         style={{
+            position: 'relative',
+            transform: CSS.Translate.toString(transform),
+            zIndex: isDragging ? 1000 : 'auto',
+         }}
+      >
          <Box position="relative" className="group">
-            <ItemThumbnail item={item} isSelected={isSelected} />
+            <ItemThumbnail
+               item={item}
+               listeners={listeners}
+               setNodeRef={setNodeRef}
+               isSelected={isSelected}
+            />
             {expandElement}
             {selectBoxElement}
             {expanded && (
@@ -94,7 +111,7 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
             )}
          </Box>
          <ItemName item={item} isSelected={isSelected} />
-      </Box>
+      </div>
    );
 };
 

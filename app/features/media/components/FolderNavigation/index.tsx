@@ -15,7 +15,7 @@ const FolderNavigation: FC = () => {
       navigate(generatePath(AppRoute.FOLDER, { folderId: folder.id }));
    };
 
-   return <FolderList selected={selected} onSelect={handleSelect} />;
+   return <FolderList droppable selected={selected} onSelect={handleSelect} />;
 };
 
 export default memo(FolderNavigation);

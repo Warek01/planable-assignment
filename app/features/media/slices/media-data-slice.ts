@@ -124,6 +124,9 @@ export const mediaDataSlice = createSlice({
          }>,
       ) {
          const { folderName } = action.payload;
+         if (state.folders.find((f) => f.name === folderName)) {
+            return;
+         }
          state.folders = state.folders.concat({
             name: folderName,
             itemIds: [],

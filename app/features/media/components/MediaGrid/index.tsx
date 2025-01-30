@@ -39,6 +39,7 @@ const MediaGrid: FC<MediaItemsGridProps> = ({ folder }) => {
          p="2"
          align="center"
          justify="center"
+         className="dnd-overflow-hidden"
       >
          {filteredItems.map((item) => (
             <Flex justify="center" p="1" key={item.id}>

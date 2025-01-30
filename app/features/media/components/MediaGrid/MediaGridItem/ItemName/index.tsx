@@ -13,6 +13,7 @@ import type { MediaItem } from '~/features/media/types/media-item';
 import { renameItem } from '~/features/media/slices/media-data-slice';
 import { useAppDispatch } from '~/hooks/redux';
 import { AppTooltip } from '~/components';
+import { cn } from '~/utils/cn';
 
 export interface ItemNameProps {
    item: MediaItem;
@@ -89,8 +90,11 @@ const ItemName: FC<ItemNameProps> = ({ item, isSelected }) => {
                <Text
                   size="1"
                   onClick={handleNameClick}
-                  className="max-w-full text-ellipsis whitespace-nowrap overflow-hidden text-secondary/80 rounded-xs
-                  hover:bg-secondary/5 duration-100 min-w-[112px] text-center p-1.5"
+                  className={cn(
+                     'max-w-full text-ellipsis whitespace-nowrap overflow-hidden  rounded-xs',
+                     'hover:bg-secondary/5 duration-100 min-w-[112px] text-center p-1.5',
+                     isSelected ? 'text-primary' : 'text-secondary/80',
+                  )}
                >
                   {item.name}
                </Text>

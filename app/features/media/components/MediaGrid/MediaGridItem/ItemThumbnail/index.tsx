@@ -3,14 +3,14 @@ import {
    memo,
    type ReactElement,
    useEffect,
-   useMemo,
    useRef,
    useState,
 } from 'react';
 import { Flex, Spinner } from '@radix-ui/themes';
 import { LinkBreak1Icon } from '@radix-ui/react-icons';
-import type { MediaItem } from '~/features/media/types/media-item';
+import { type DraggableSyntheticListeners } from '@dnd-kit/core';
 
+import type { MediaItem } from '~/features/media/types/media-item';
 import { cn } from '~/utils/cn';
 import { MediaItemType } from '~/features/media/config/media-item-type';
 import { Gif, PlayFilled } from '~/components/icons';
@@ -18,6 +18,8 @@ import { Gif, PlayFilled } from '~/components/icons';
 export interface ItemThumbnailProps {
    item: MediaItem;
    isSelected: boolean;
+   listeners: DraggableSyntheticListeners;
+   setNodeRef: (element: HTMLElement | null) => void;
 }
 
 const playIconMap: Record<MediaItemType, ReactElement> = {
@@ -34,7 +36,12 @@ const playIconMap: Record<MediaItemType, ReactElement> = {
    ),
 };
 
-const ItemThumbnail: FC<ItemThumbnailProps> = ({ item, isSelected }) => {
+const ItemThumbnail: FC<ItemThumbnailProps> = ({
+   item,
+   isSelected,
+   listeners,
+   setNodeRef,
+}) => {
    const [thumbnailLoaded, setThumbnailLoaded] = useState(false);
    const [isError, setIsError] = useState(false);
    const ref = useRef<HTMLImageElement>(null);
@@ -72,6 +79,8 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ item, isSelected }) => {
                ? 'bg-primary/10 border-primary'
                : 'border-transparent group-hover:bg-secondary/20',
          )}
+         ref={setNodeRef}
+         {...listeners}
       >
          {!thumbnailLoaded && (
             <Flex align="center" justify="center" position="absolute">
