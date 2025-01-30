@@ -59,7 +59,7 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ item, isSelected }) => {
 
       ref.current.onload = handleLoad;
       ref.current.onerror = handleError;
-   }, [item.url]);
+   }, [item.thumbnailUrl]);
 
    return (
       <Flex
@@ -89,7 +89,7 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ item, isSelected }) => {
 
          <img
             ref={ref}
-            src={item.url}
+            src={item.thumbnailUrl}
             alt={item.name}
             className="w-auto h-auto max-w-full max-h-full duration-100 border-2 border-secondary/20 group-hover:border-secondary/30 rounded-md"
          />

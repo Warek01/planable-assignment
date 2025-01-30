@@ -21,7 +21,7 @@ const BackdropMediaPlayer: FC<BackdropMediaPlayerProps> = ({
                <img
                   alt={item.name}
                   src={item.url}
-                  className="w-[90vw] h-[90vh] object-contain rounded-md"
+                  className="max-w-[90vw] max-h-[90vh] rounded-xl"
                />
             );
          case MediaItemType.VIDEO:
@@ -29,7 +29,7 @@ const BackdropMediaPlayer: FC<BackdropMediaPlayerProps> = ({
             return (
                <video
                   src="/mock-video.mp4"
-                  className="max-w-[90vw] max-h-[90vh] rounded-md"
+                  className="max-w-[90vw] max-h-[90vh] rounded-xl"
                   controls
                   autoPlay
                   muted
@@ -44,7 +44,7 @@ const BackdropMediaPlayer: FC<BackdropMediaPlayerProps> = ({
             {onClose && (
                <button
                   onClick={onClose}
-                  className="absolute top-0 right-0 p-4 bg-white/10 hover:bg-white/30 rounded-full transition cursor-pointer z-50"
+                  className="absolute top-2 right-2 p-3 bg-white/10 hover:bg-white/30 rounded-full transition cursor-pointer z-50"
                >
                   <Cross1Icon color="white" />
                </button>
