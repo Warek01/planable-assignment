@@ -22,24 +22,22 @@ const Sidebar: FC = () => {
                </Flex>
             </NavLink>
 
-            <Flex direction="column" overflowY="auto" gapY="2">
-               <Box overflowY="auto" flexGrow="1">
-                  <ScrollArea type="hover">
-                     <Text size="2" weight="medium" className="px-1">
-                        Folders
-                     </Text>
-                     <FolderNavigation />
-                  </ScrollArea>
-               </Box>
+            <Flex direction="column" gapY="4" overflow="hidden">
+               <Text size="2" weight="medium" className="px-2">
+                  Folders
+               </Text>
+               <ScrollArea>
+                  <FolderNavigation />
+               </ScrollArea>
                <CreateFolderInput />
             </Flex>
 
-            <Box>
-               <Text size="2" weight="medium" className="px-1">
+            <Flex direction="column" gapY="4">
+               <Text size="2" weight="medium" className="px-2">
                   Filters
                </Text>
                <FilterList />
-            </Box>
+            </Flex>
          </Flex>
       </Box>
    );

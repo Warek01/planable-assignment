@@ -6,6 +6,7 @@ import {
    createFolder,
    selectAllFolderNames,
 } from '~/features/media/slices/media-data-slice';
+import { cn } from '~/utils/cn';
 
 const CreateFolderInput: FC = () => {
    const dispatch = useAppDispatch();
@@ -33,17 +34,23 @@ const CreateFolderInput: FC = () => {
          <Flex align="center" gap="1">
             <TextField.Root
                placeholder="Folder name"
-               size="1"
                value={newFolderName}
                onChange={handleChange}
             />
-            <Button onClick={handleSubmit} size="1" disabled={folderExists}>
+            <Button onClick={handleSubmit} disabled={folderExists}>
                Create
             </Button>
          </Flex>
-         {folderExists && isValid && (
-            <Text>{newFolderName} already exists</Text>
-         )}
+         <Text
+            size="1"
+            color="red"
+            className={cn(
+               'block text-ellipsis whitespace-nowrap overflow-hidden',
+               { 'opacity-0': !folderExists || !isValid },
+            )}
+         >
+            {newFolderName} already exists
+         </Text>
       </Box>
    );
 };

@@ -13,16 +13,25 @@ export interface FolderItemProps {
 
 const FolderItem: FC<FolderItemProps> = ({ folder, isSelected, onSelect }) => {
    return (
-      <Box className={cn(isSelected && 'bg-gray-300')}>
+      <Box
+         className={cn(
+            'duration-100 hover:bg-secondary/5 rounded-md overflow-hidden',
+            isSelected && 'bg-secondary/5 hover:bg-secondary/10',
+         )}
+      >
          <Flex
             gapX="2"
             align="center"
-            className="cursor-pointer"
+            px="2"
+            py="1"
+            className="cursor-pointer overflow-hidden max-w-full"
             onClick={() => onSelect(folder)}
          >
-            <FolderIcon />
-            <Text>{folder.name}</Text>
-            <Text>{folder.itemIds.length}</Text>
+            <FolderIcon className="flex-shrink-0" />
+            <Text className="text-secondary overflow-hidden whitespace-nowrap text-ellipsis flex-grow min-w-0">
+               {folder.name}
+            </Text>
+            <Text className="text-secondary/40">{folder.itemIds.length}</Text>
          </Flex>
       </Box>
    );

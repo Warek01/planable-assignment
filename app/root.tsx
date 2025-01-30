@@ -10,9 +10,9 @@ import {
 import type { FC, PropsWithChildren } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { Provider } from 'react-redux';
-import { Theme, ThemePanel } from '@radix-ui/themes';
+import { Theme } from '@radix-ui/themes';
 
-import './app.css';
+import './styles/app.css';
 import type { Route } from './+types/root';
 import { store } from './store';
 import { toastConfig } from './config/toast-config';

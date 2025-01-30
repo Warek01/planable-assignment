@@ -44,11 +44,11 @@ const FilterListItem: FC<FilterListProps> = ({
 
    return (
       <label>
-         <Flex>
-            <Flex align="center">
+         <Flex justify="between" align="center" px="2" py="1">
+            <Flex align="center" gapX="2">
                <item.Icon />
-               <Text>{item.text}</Text>
-               <Text>{count}</Text>
+               <Text className="text-secondary">{item.text}</Text>
+               <Text className="text-secondary/40">{count}</Text>
             </Flex>
             <Box>
                <Checkbox checked={selected} onClick={handleClick} />

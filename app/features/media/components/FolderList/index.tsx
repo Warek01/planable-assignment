@@ -16,7 +16,7 @@ const FolderList: FC<FolderListProps> = ({ onSelect, selected }) => {
    const folders = useAppSelector(selectFolders);
 
    return (
-      <Flex direction="column" gapY="1">
+      <Flex direction="column" gapY="1" overflow="hidden">
          {folders.map((folder) => (
             <FolderItem
                onSelect={onSelect}

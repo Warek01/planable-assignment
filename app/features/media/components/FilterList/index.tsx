@@ -92,37 +92,37 @@ const FilterList: FC = () => {
    ));
 
    return (
-      <Flex direction="column" gapY="2">
-         <Flex justify="between" align="center">
-            <Flex
-               align="center"
-               gap="2"
-               onClick={handleVisibilityToggle}
-               className="cursor-pointer"
-            >
-               <Text wrap="nowrap">Media type</Text>
-               <Chevron
-                  className={cn('duration-100', isOpen ? '' : 'rotate-180')}
+      <Flex direction="column" gapY="4">
+         <Flex direction="column" gapY="2">
+            <Flex justify="between" align="center" px="2">
+               <Flex
+                  align="center"
+                  gap="2"
+                  onClick={handleVisibilityToggle}
+                  className="cursor-pointer"
+               >
+                  <Text wrap="nowrap" size="1" className="text-secondary/60">
+                     Media type
+                  </Text>
+                  <Chevron
+                     className={cn('duration-100', isOpen ? '' : 'rotate-180')}
+                  />
+               </Flex>
+               <Checkbox
+                  checked={allFiltersCheckmarkValue}
+                  onClick={handleAllFiltersClick}
                />
             </Flex>
-            <Checkbox
-               checked={allFiltersCheckmarkValue}
-               onClick={handleAllFiltersClick}
-            />
-         </Flex>
-         <Flex
-            direction="column"
-            overflow="hidden"
-            className={cn('duration-100', isOpen ? 'max-h-[300px]' : 'max-h-0')}
-         >
-            {filterListItemElements}
+            <Flex
+               direction="column"
+               overflow="hidden"
+               className={cn('duration-100', isOpen ? 'max-h-full' : 'max-h-0')}
+            >
+               {filterListItemElements}
+            </Flex>
          </Flex>
 
-         <TextField.Root
-            size="1"
-            placeholder="Search"
-            onChange={handleSearchChange}
-         >
+         <TextField.Root placeholder="Search" onChange={handleSearchChange}>
             <TextField.Slot>
                <MagnifyingGlassIcon height="16" width="16" />
             </TextField.Slot>
