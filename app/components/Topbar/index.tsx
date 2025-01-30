@@ -21,6 +21,7 @@ import {
    selectSelectedItemIds,
    setItemSelection,
 } from '~/features/media/slices/media-ui-state-slice';
+import { AppTooltip } from '~/components';
 
 const Topbar: FC = () => {
    const selectedFolder = useAppSelector(selectSelectedFolder);
@@ -86,24 +87,43 @@ const Topbar: FC = () => {
    }, [selectedItemIds.length, selectedFolder?.itemIds.length]);
 
    return (
-      <Flex flexShrink="0" height="64px">
+      <Flex
+         flexShrink="0"
+         align="center"
+         height="64px"
+         gapX="6"
+         mr="2"
+         className="border-b border-b-secondary/10"
+      >
          <label>
-            <Flex>
+            <Flex align="center" gapX="2">
                <Checkbox
                   onClick={handleAllItemsSelectClick}
                   checked={checkboxState}
                />
-               <Text>{selectedItemIds.length} selected</Text>
+               <Text className="text-secondary/60">
+                  {selectedItemIds.length} selected
+               </Text>
             </Flex>
          </label>
-         <FolderSelector
-            onSelect={handleFolderSelect}
-            disabled={!selectedItemIds.length}
-            selected={selectedFolder}
-         />
-         <Button disabled={!selectedItemIds.length} onClick={handleDelete}>
-            <TrashIcon />
-         </Button>
+         {!!selectedItemIds.length && (
+            <Flex gapX="3">
+               <FolderSelector
+                  onSelect={handleFolderSelect}
+                  disabled={!selectedItemIds.length}
+                  selected={selectedFolder}
+                  tooltip="Move items to"
+               />
+               <AppTooltip content={`Delete ${selectedItemIds.length} items`}>
+                  <Button
+                     disabled={!selectedItemIds.length}
+                     onClick={handleDelete}
+                  >
+                     <TrashIcon />
+                  </Button>
+               </AppTooltip>
+            </Flex>
+         )}
       </Flex>
    );
 };
