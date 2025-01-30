@@ -3,10 +3,11 @@ import { NavLink } from 'react-router';
 import { Box, Flex, Avatar, Text, ScrollArea } from '@radix-ui/themes';
 
 import { AppRoute } from '~/config/app-route';
-import { CreateFolderInput } from '~/features/media/components';
-
-import FoldersList from './FoldersList';
-import FilterList from './FilterList';
+import {
+   CreateFolderInput,
+   FilterList,
+   FolderNavigation,
+} from '~/features/media/components';
 
 const Sidebar: FC = () => {
    return (
@@ -27,7 +28,7 @@ const Sidebar: FC = () => {
                      <Text size="2" weight="medium" className="px-1">
                         Folders
                      </Text>
-                     <FoldersList />
+                     <FolderNavigation />
                   </ScrollArea>
                </Box>
                <CreateFolderInput />

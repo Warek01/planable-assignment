@@ -1,4 +1,4 @@
-import { type FC, useMemo, useState } from 'react';
+import { type FC, memo, useMemo, useState } from 'react';
 import { Checkbox, Flex, Text, type CheckboxProps } from '@radix-ui/themes';
 import { useSelector } from 'react-redux';
 
@@ -99,4 +99,4 @@ const FilterList: FC = () => {
    );
 };
 
-export default FilterList;
+export default memo(FilterList);

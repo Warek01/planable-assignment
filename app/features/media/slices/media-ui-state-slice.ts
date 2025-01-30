@@ -54,6 +54,10 @@ export const mediaUiStateSlice = createSlice({
          }
          state.selectedItemIds = state.selectedItemIds.concat(itemId);
       },
+      setItemSelection(state, action: PayloadAction<{ itemIds: string[] }>) {
+         const { itemIds } = action.payload;
+         state.selectedItemIds = itemIds;
+      },
       removeItemFromSelection(
          state,
          action: PayloadAction<{ itemId: string }>,
@@ -81,6 +85,7 @@ export const {
    removeItemFromSelection,
    clearItemSelection,
    addItemToSelection,
+   setItemSelection,
    removeFilter,
    applyFilter,
 } = mediaUiStateSlice.actions;

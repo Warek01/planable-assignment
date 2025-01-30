@@ -80,7 +80,7 @@ export const mockItems: MediaItem[] = [
       id: 'acb33bdb-37e0-4846-a54f-511eb23e1d36',
    },
    {
-      name: 'img1.jpg',
+      name: 'img21.jpg',
       type: MediaItemType.IMAGE,
       url: 'https://picsum.photos/id/5/200/300',
       thumbnailUrl: 'https://picsum.photos/id/5/200/300',

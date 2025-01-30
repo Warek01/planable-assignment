@@ -4,7 +4,10 @@ import { Box, Heading } from '@radix-ui/themes';
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
 import { MediaGrid } from '~/features/media/components';
 import { selectFolder } from '~/features/media/slices/media-data-slice';
-import { setActiveFolder } from '~/features/media/slices/media-ui-state-slice';
+import {
+   clearItemSelection,
+   setActiveFolder,
+} from '~/features/media/slices/media-ui-state-slice';
 
 import type { Route } from './+types/folder';
 
@@ -13,12 +16,14 @@ const FolderPage: FC<Route.ComponentProps> = ({ params }) => {
    const folder = useAppSelector((state) => selectFolder(state, folderId));
    const dispatch = useAppDispatch();
 
-   // Sync selected folder with store
    useEffect(() => {
+      // Sync selected folder with store
       dispatch(setActiveFolder({ folderId: folder?.id }));
+      dispatch(clearItemSelection());
 
       return () => {
          dispatch(setActiveFolder({ folderId: undefined }));
+         dispatch(clearItemSelection());
       };
    }, [folderId]);
 
