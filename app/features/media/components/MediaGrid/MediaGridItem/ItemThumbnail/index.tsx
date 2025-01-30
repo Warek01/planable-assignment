@@ -100,7 +100,10 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({
             ref={ref}
             src={item.thumbnailUrl}
             alt={item.name}
-            className="w-auto h-auto max-w-full max-h-full duration-100 border-2 border-secondary/20 group-hover:border-secondary/30 rounded-md"
+            className={cn(
+               'w-auto h-auto max-w-full max-h-full duration-100 border-2 border-secondary/20 group-hover:border-secondary/30 rounded-md',
+               isError && 'hidden',
+            )}
          />
       </Flex>
    );
