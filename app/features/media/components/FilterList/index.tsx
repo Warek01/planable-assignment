@@ -1,6 +1,19 @@
-import { type FC, memo, useMemo, useState } from 'react';
-import { Checkbox, Flex, Text, type CheckboxProps } from '@radix-ui/themes';
+import {
+   type ChangeEventHandler,
+   type FC,
+   memo,
+   useMemo,
+   useState,
+} from 'react';
+import {
+   Checkbox,
+   Flex,
+   Text,
+   type CheckboxProps,
+   TextField,
+} from '@radix-ui/themes';
 import { useSelector } from 'react-redux';
+import { MagnifyingGlassIcon } from '@radix-ui/react-icons';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
 import { MediaItemType } from '~/features/media/config/media-item-type';
@@ -8,16 +21,18 @@ import { Chevron } from '~/components/icons';
 import { cn } from '~/utils/cn';
 import { allMediaTypes } from '~/features/media/config/all-media-types';
 import {
-   applyFilter,
+   addFilter,
    clearFilters,
    fillFilters,
    removeFilter,
    selectActiveFilters,
    selectSelectedFolder,
+   setSearchString,
 } from '~/features/media/slices/media-ui-state-slice';
 import { selectItems } from '~/features/media/slices/media-data-slice';
 
 import FilterListItem from './FilterListItem';
+import { useDebouncedCallback } from 'use-debounce';
 
 const FilterList: FC = () => {
    const appliedFilters = useAppSelector(selectActiveFilters);
@@ -25,6 +40,13 @@ const FilterList: FC = () => {
    const allItems = useAppSelector(selectItems);
    const dispatch = useAppDispatch();
    const [isOpen, setIsOpen] = useState(true);
+
+   const handleSearchChange = useDebouncedCallback<
+      ChangeEventHandler<HTMLInputElement>
+   >((event) => {
+      const searchString = event.target.value;
+      dispatch(setSearchString({ searchString }));
+   }, 250);
 
    const allFiltersCheckmarkValue = useMemo<CheckboxProps['checked']>(() => {
       if (!appliedFilters.length) {
@@ -39,7 +61,7 @@ const FilterList: FC = () => {
    const handleSelect = (type: MediaItemType) => {
       const action = appliedFilters.includes(type)
          ? removeFilter({ filter: type })
-         : applyFilter({ filter: type });
+         : addFilter({ filter: type });
 
       dispatch(action);
    };
@@ -95,6 +117,16 @@ const FilterList: FC = () => {
          >
             {filterListItemElements}
          </Flex>
+
+         <TextField.Root
+            size="1"
+            placeholder="Search"
+            onChange={handleSearchChange}
+         >
+            <TextField.Slot>
+               <MagnifyingGlassIcon height="16" width="16" />
+            </TextField.Slot>
+         </TextField.Root>
       </Flex>
    );
 };

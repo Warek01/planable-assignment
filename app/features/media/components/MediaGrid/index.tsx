@@ -4,10 +4,14 @@ import { Flex, Grid } from '@radix-ui/themes';
 import { useAppSelector } from '~/hooks/redux';
 import type { Folder } from '~/features/media/types/folder';
 import type { MediaItem } from '~/features/media/types/media-item';
-import { selectActiveFilters } from '~/features/media/slices/media-ui-state-slice';
+import {
+   selectActiveFilters,
+   selectSearchString,
+} from '~/features/media/slices/media-ui-state-slice';
 import { selectItems } from '~/features/media/slices/media-data-slice';
 
 import MediaGridItem from './MediaGridItem';
+import { filterItems } from '~/features/media/utils/filter-items';
 
 export interface MediaItemsGridProps {
    folder: Folder;
@@ -16,15 +20,16 @@ export interface MediaItemsGridProps {
 const MediaGrid: FC<MediaItemsGridProps> = ({ folder }) => {
    const allItems = useAppSelector(selectItems);
    const activeFilters = useAppSelector(selectActiveFilters);
+   const searchString = useAppSelector(selectSearchString);
 
-   const filteredItems = useMemo<MediaItem[]>(
+   const filteredItems = useMemo(
       () =>
-         allItems.filter(
-            (item) =>
-               folder.itemIds.includes(item.id) &&
-               activeFilters.includes(item.type),
-         ),
-      [allItems, activeFilters, folder],
+         filterItems(allItems, {
+            folder,
+            type: activeFilters,
+            name: searchString,
+         }),
+      [folder, allItems, activeFilters, searchString],
    );
 
    return (

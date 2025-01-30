@@ -13,12 +13,14 @@ export interface MediaUiState {
    selectedFolderId: string | undefined;
    activeFilters: MediaItemType[];
    selectedItemIds: string[];
+   searchString: string | undefined;
 }
 
 const initialState: MediaUiState = {
    selectedItemIds: [],
    selectedFolderId: undefined,
    activeFilters: [MediaItemType.IMAGE, MediaItemType.VIDEO, MediaItemType.GIF],
+   searchString: undefined,
 };
 
 export const MEDIA_UI_STATE_SLICE_NAME = 'media-ui-state';
@@ -34,7 +36,7 @@ export const mediaUiStateSlice = createSlice({
          const { folderId } = action.payload;
          state.selectedFolderId = folderId;
       },
-      applyFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
+      addFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
          const { filter } = action.payload;
          if (state.activeFilters.includes(filter)) {
             return;
@@ -74,6 +76,13 @@ export const mediaUiStateSlice = createSlice({
          const { filter } = action.payload;
          state.activeFilters = state.activeFilters.filter((f) => f !== filter);
       },
+      setSearchString(
+         state,
+         action: PayloadAction<{ searchString: string | undefined }>,
+      ) {
+         const { searchString } = action.payload;
+         state.searchString = searchString;
+      },
    },
 });
 
@@ -87,8 +96,12 @@ export const {
    addItemToSelection,
    setItemSelection,
    removeFilter,
-   applyFilter,
+   addFilter,
+   setSearchString,
 } = mediaUiStateSlice.actions;
+
+export const selectSearchString = (state: RootState): string | undefined =>
+   state.mediaUiState.searchString;
 
 export const selectSelectedItemIds = (state: RootState): string[] =>
    state.mediaUiState.selectedItemIds;

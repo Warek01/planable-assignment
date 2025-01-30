@@ -1,4 +1,4 @@
-import { type FC, memo, useEffect, useState } from 'react';
+import { type FC, memo, useEffect, useRef, useState } from 'react';
 import { Flex, Spinner } from '@radix-ui/themes';
 import { LinkBreak1Icon } from '@radix-ui/react-icons';
 
@@ -11,6 +11,7 @@ export interface ItemThumbnailProps {
 const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
    const [thumbnailLoaded, setThumbnailLoaded] = useState(false);
    const [isError, setIsError] = useState(false);
+   const ref = useRef<HTMLImageElement>(null);
 
    const handleLoad = () => {
       setThumbnailLoaded(true);
@@ -22,10 +23,16 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
    };
 
    useEffect(() => {
-      const img = new Image();
-      img.src = src;
-      img.onload = handleLoad;
-      img.onerror = handleError;
+      if (!ref.current) {
+         return;
+      }
+
+      if (ref.current.complete) {
+         handleLoad();
+      }
+
+      ref.current.onload = handleLoad;
+      ref.current.onerror = handleError;
    }, [src]);
 
    return (
@@ -43,11 +50,11 @@ const ItemThumbnail: FC<ItemThumbnailProps> = ({ src }) => {
          )}
 
          <img
+            ref={ref}
             src={src}
             alt="image thumbnail"
             className={cn(
                'w-auto h-auto max-w-full max-h-full transition-opacity duration-200',
-               thumbnailLoaded && !isError ? 'opacity-100' : 'opacity-0',
             )}
          />
       </Flex>
