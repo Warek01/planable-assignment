@@ -31,6 +31,11 @@ const Topbar: FC = () => {
       if (!selectedFolder) {
          return;
       }
+      dispatch(clearItemSelection());
+
+      if (selectedFolder.id === folder.id) {
+         return;
+      }
 
       dispatch(
          moveItems({
@@ -39,7 +44,6 @@ const Topbar: FC = () => {
             dstFolderId: folder.id,
          }),
       );
-      dispatch(clearItemSelection());
    };
 
    const handleAllItemsSelectClick = () => {

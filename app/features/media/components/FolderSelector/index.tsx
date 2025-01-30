@@ -1,4 +1,4 @@
-import { type FC, memo } from 'react';
+import { type FC, memo, useState } from 'react';
 import { Button, DropdownMenu } from '@radix-ui/themes';
 
 import type { Folder } from '~/features/media/types/folder';
@@ -15,16 +15,26 @@ const FolderSelector: FC<FolderSelectorProps> = ({
    disabled,
    onSelect,
 }) => {
+   const [isOpen, setIsOpen] = useState(false);
+
+   const handleSelect = (folder: Folder) => {
+      setIsOpen(false);
+      onSelect(folder);
+   };
+
    return (
-      <DropdownMenu.Root>
-         <DropdownMenu.Trigger disabled={disabled}>
+      <DropdownMenu.Root open={isOpen}>
+         <DropdownMenu.Trigger
+            onClick={() => setIsOpen((v) => !v)}
+            disabled={disabled}
+         >
             <Button>
                {selected?.name ?? '-'}
                <DropdownMenu.TriggerIcon />
             </Button>
          </DropdownMenu.Trigger>
          <DropdownMenu.Content>
-            <FolderList onSelect={onSelect} selected={selected} />
+            <FolderList onSelect={handleSelect} selected={selected} />
          </DropdownMenu.Content>
       </DropdownMenu.Root>
    );
