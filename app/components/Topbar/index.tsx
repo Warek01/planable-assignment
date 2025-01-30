@@ -8,7 +8,7 @@ import {
 } from '@radix-ui/themes';
 import { TrashIcon } from '@radix-ui/react-icons';
 
-import { FolderSelector } from '~/features/media/components';
+import { FolderSelector, UploadFileInput } from '~/features/media/components';
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
 import {
    deleteItems,
@@ -106,24 +106,29 @@ const Topbar: FC = () => {
                </Text>
             </Flex>
          </label>
-         {!!selectedItemIds.length && (
-            <Flex gapX="3">
-               <FolderSelector
-                  onSelect={handleFolderSelect}
-                  disabled={!selectedItemIds.length}
-                  selected={selectedFolder}
-                  tooltip="Move items to"
-               />
-               <AppTooltip content={`Delete ${selectedItemIds.length} items`}>
-                  <Button
+         <Flex gapX="3">
+            {!!selectedItemIds.length && (
+               <>
+                  <FolderSelector
+                     onSelect={handleFolderSelect}
                      disabled={!selectedItemIds.length}
-                     onClick={handleDelete}
+                     selected={selectedFolder}
+                     tooltip="Move items to"
+                  />
+                  <AppTooltip
+                     content={`Delete ${selectedItemIds.length} items`}
                   >
-                     <TrashIcon />
-                  </Button>
-               </AppTooltip>
-            </Flex>
-         )}
+                     <Button
+                        disabled={!selectedItemIds.length}
+                        onClick={handleDelete}
+                     >
+                        <TrashIcon />
+                     </Button>
+                  </AppTooltip>
+               </>
+            )}
+            <UploadFileInput />
+         </Flex>
       </Flex>
    );
 };

@@ -1,5 +1,5 @@
 import { type FC, memo } from 'react';
-import { Box, Button, DropdownMenu, Flex, Text } from '@radix-ui/themes';
+import { Box, DropdownMenu, Flex, Text } from '@radix-ui/themes';
 
 import type { Folder } from '~/features/media/types/folder';
 import FolderIcon from '~/components/icons/Folder';
@@ -7,10 +7,11 @@ import { FolderList } from '~/features/media/components';
 import { AppTooltip } from '~/components';
 
 export interface FolderSelectorProps {
-   disabled: boolean;
+   disabled?: boolean;
    selected: Folder | undefined;
    onSelect: (folder: Folder) => void;
    tooltip?: string;
+   width?: string;
 }
 
 const FolderSelector: FC<FolderSelectorProps> = ({
@@ -18,13 +19,15 @@ const FolderSelector: FC<FolderSelectorProps> = ({
    disabled,
    onSelect,
    tooltip,
+   width = '150px',
 }) => {
    return (
       <DropdownMenu.Root>
          <AppTooltip content={tooltip}>
             <DropdownMenu.Trigger disabled={disabled}>
                <button
-                  className="bg-transparent px-3 py-1 rounded-md text-secondary border border-secondary/10 flex items-center w-[150px] 
+                  style={{ width }}
+                  className="bg-transparent px-3 py-1 rounded-md text-secondary border border-secondary/10 flex items-center
                   justify-between cursor-pointer hover:border-secondary/20 duration-100 box-border"
                >
                   <Flex align="center" gap="2">
@@ -38,7 +41,12 @@ const FolderSelector: FC<FolderSelectorProps> = ({
             </DropdownMenu.Trigger>
          </AppTooltip>
          <DropdownMenu.Content className="!rounded-lg">
-            <Box width="132px" maxWidth="132px">
+            <Box
+               style={{
+                  width: `calc(${width} - 18px)`,
+                  maxWidth: `calc(${width} - 18px)`,
+               }}
+            >
                <FolderList onSelect={onSelect} selected={selected} />
             </Box>
          </DropdownMenu.Content>
