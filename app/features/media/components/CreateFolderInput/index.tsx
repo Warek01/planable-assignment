@@ -2,7 +2,10 @@ import { type ChangeEventHandler, type FC, useState } from 'react';
 import { Box, Button, Flex, Text, TextField } from '@radix-ui/themes';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { createFolder, selectAllFolderNames } from '~/features/media/slice';
+import {
+   createFolder,
+   selectAllFolderNames,
+} from '~/features/media/slices/media-data-slice';
 
 const CreateFolderInput: FC = () => {
    const dispatch = useAppDispatch();

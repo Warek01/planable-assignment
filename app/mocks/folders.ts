@@ -19,7 +19,10 @@ export const mockFolders: Folder[] = [
    {
       name: 'folder-2',
       id: '4ac8ca09-e9c4-4baf-94f2-855bf78911d6',
-      itemIds: ['43b33bdb-37e0-4846-a54f-511eb23e1d36'],
+      itemIds: [
+         '43b33bdb-37e0-4846-a54f-511eb23e1d36',
+         'acb33bdb-37e0-4846-a54f-511eb23e1d36',
+      ],
    },
    {
       name: 'folder-3',

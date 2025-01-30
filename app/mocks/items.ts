@@ -73,6 +73,13 @@ export const mockItems: MediaItem[] = [
       id: '43b33bdb-37e0-4846-a54f-511eb23e1d36',
    },
    {
+      name: 'vid.mp4',
+      type: MediaItemType.VIDEO,
+      url: 'https://picsum.photos/id/20/1000/300',
+      thumbnailUrl: 'https://picsum.photos/id/20/1000/300',
+      id: 'acb33bdb-37e0-4846-a54f-511eb23e1d36',
+   },
+   {
       name: 'img1.jpg',
       type: MediaItemType.IMAGE,
       url: 'https://picsum.photos/id/5/200/300',

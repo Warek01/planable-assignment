@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 
-import { mediaReducer } from '~/features/media/slice';
+import { mediaDataReducer } from '~/features/media/slices/media-data-slice';
+import { mediaUiStateReducer } from '~/features/media/slices/media-ui-state-slice';
 
 export const store = configureStore({
    reducer: {
-      media: mediaReducer,
+      mediaData: mediaDataReducer,
+      mediaUiState: mediaUiStateReducer,
    },
 });
 

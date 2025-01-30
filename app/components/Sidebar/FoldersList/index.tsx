@@ -2,7 +2,7 @@ import { type FC } from 'react';
 import { Flex } from '@radix-ui/themes';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { selectFolders } from '~/features/media/slice';
+import { selectFolders } from '~/features/media/slices/media-data-slice';
 
 import FolderItem from './FolderItem';
 

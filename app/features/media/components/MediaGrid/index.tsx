@@ -3,8 +3,9 @@ import { Flex, Grid } from '@radix-ui/themes';
 
 import { useAppSelector } from '~/hooks/redux';
 import type { Folder } from '~/features/media/types/folder';
-import { selectActiveFilters, selectItems } from '~/features/media/slice';
 import type { MediaItem } from '~/features/media/types/media-item';
+import { selectActiveFilters } from '~/features/media/slices/media-ui-state-slice';
+import { selectItems } from '~/features/media/slices/media-data-slice';
 
 import MediaGridItem from './MediaGridItem';
 

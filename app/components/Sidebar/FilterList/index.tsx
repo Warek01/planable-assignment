@@ -3,19 +3,19 @@ import { Checkbox, Flex, Text, type CheckboxProps } from '@radix-ui/themes';
 import { useSelector } from 'react-redux';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
+import { MediaItemType } from '~/features/media/config/media-item-type';
+import { Chevron } from '~/components/icons';
+import { cn } from '~/utils/cn';
+import { allMediaTypes } from '~/features/media/config/all-media-types';
 import {
    applyFilter,
    clearFilters,
    fillFilters,
    removeFilter,
    selectActiveFilters,
-   selectItems,
    selectSelectedFolder,
-} from '~/features/media/slice';
-import { MediaItemType } from '~/features/media/config/media-item-type';
-import { Chevron } from '~/components/icons';
-import { cn } from '~/utils/cn';
-import { allMediaTypes } from '~/features/media/config/all-media-types';
+} from '~/features/media/slices/media-ui-state-slice';
+import { selectItems } from '~/features/media/slices/media-data-slice';
 
 import FilterListItem from './FilterListItem';
 

@@ -9,31 +9,23 @@ import type { Folder } from '~/features/media/types/folder';
 import type { MediaItem } from '~/features/media/types/media-item';
 import type { RootState } from '~/store';
 import { mockFolders } from '~/mocks/folders';
-import { MediaItemType } from '~/features/media/config/media-item-type';
 import { mockItems } from '~/mocks/items';
-import { allMediaTypes } from '~/features/media/config/all-media-types';
 
-interface MediaState {
+export interface MediaDataState {
    folders: Folder[];
    items: MediaItem[];
-   selectedFolderId: string | undefined;
-   activeFilters: MediaItemType[];
-   selectedItemIds: string[];
 }
 
-const initialState: MediaState = {
+const initialState: MediaDataState = {
    folders: mockFolders,
    items: mockItems,
-   selectedItemIds: [],
-   selectedFolderId: undefined,
-   activeFilters: [MediaItemType.IMAGE, MediaItemType.VIDEO, MediaItemType.GIF],
 };
 
-export const MEDIA_SLICE_NAME = 'media';
+export const MEDIA_DATA_SLICE_NAME = 'media-data';
 
-export const mediaSlice = createSlice({
+export const mediaDataSlice = createSlice({
    initialState,
-   name: MEDIA_SLICE_NAME,
+   name: MEDIA_DATA_SLICE_NAME,
    reducers: {
       addItem(
          state,
@@ -105,14 +97,14 @@ export const mediaSlice = createSlice({
       renameItem(
          state,
          action: PayloadAction<{
-            item: MediaItem;
+            itemId: string;
             newName: string;
          }>,
       ) {
-         const { newName, item } = action.payload;
+         const { newName, itemId } = action.payload;
 
          state.items = state.items.map((stateItem) =>
-            stateItem.id === item.id
+            stateItem.id === itemId
                ? {
                     ...stateItem,
                     name: newName,
@@ -144,31 +136,10 @@ export const mediaSlice = createSlice({
             (folder) => folder.name !== folderName,
          );
       },
-      setActiveFolder(
-         state,
-         action: PayloadAction<{ folderId: string | undefined }>,
-      ) {
-         const { folderId } = action.payload;
-         state.selectedFolderId = folderId;
-      },
-      applyFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
-         const { filter } = action.payload;
-         state.activeFilters = state.activeFilters.concat(filter);
-      },
-      clearFilters(state) {
-         state.activeFilters = [];
-      },
-      fillFilters(state) {
-         state.activeFilters = allMediaTypes.concat();
-      },
-      removeFilter(state, action: PayloadAction<{ filter: MediaItemType }>) {
-         const { filter } = action.payload;
-         state.activeFilters = state.activeFilters.filter((f) => f !== filter);
-      },
    },
 });
 
-export const mediaReducer = mediaSlice.reducer;
+export const mediaDataReducer = mediaDataSlice.reducer;
 export const {
    deleteItem,
    renameItem,
@@ -176,38 +147,19 @@ export const {
    moveItem,
    createFolder,
    deleteFolder,
-   fillFilters,
-   clearFilters,
-   setActiveFolder,
-   removeFilter,
-   applyFilter,
-} = mediaSlice.actions;
+} = mediaDataSlice.actions;
 
 export const selectFolders = (state: RootState): Folder[] =>
-   state.media.folders;
+   state.mediaData.folders;
 
-export const selectItems = (state: RootState): MediaItem[] => state.media.items;
-
-export const selectSelectedItemIds = (state: RootState): string[] =>
-   state.media.selectedItemIds;
-
-export const selectSelectedFolderId = (state: RootState): string | undefined =>
-   state.media.selectedFolderId;
-
-export const selectSelectedFolder = createSelector(
-   [selectFolders, selectSelectedFolderId],
-   (folders, selectedFolderId) =>
-      folders.find((folder) => folder.id === selectedFolderId),
-);
+export const selectItems = (state: RootState): MediaItem[] =>
+   state.mediaData.items;
 
 export const selectFolder = createSelector(
    [selectFolders, (state: RootState, folderId: string) => folderId],
    (folders, folderId) =>
       folders.find((stateFolder) => stateFolder.id === folderId),
 );
-
-export const selectActiveFilters = (state: RootState): MediaItemType[] =>
-   state.media.activeFilters;
 
 export const selectItem = createSelector(
    [selectItems, (state: RootState, itemId: string) => itemId],

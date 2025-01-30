@@ -1,10 +1,12 @@
 import { type FC, useEffect } from 'react';
 import { Box, Heading } from '@radix-ui/themes';
 
-import type { Route } from './+types/folder';
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { selectFolder, setActiveFolder } from '~/features/media/slice';
 import { MediaGrid } from '~/features/media/components';
+import { selectFolder } from '~/features/media/slices/media-data-slice';
+import { setActiveFolder } from '~/features/media/slices/media-ui-state-slice';
+
+import type { Route } from './+types/folder';
 
 const FolderPage: FC<Route.ComponentProps> = ({ params }) => {
    const { folderId } = params;
