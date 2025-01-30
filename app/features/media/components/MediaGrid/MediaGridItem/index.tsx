@@ -1,4 +1,4 @@
-import { type FC, useMemo } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { Box, Text } from '@radix-ui/themes';
 
 import type { MediaItem } from '~/features/media/types/media-item';
@@ -8,10 +8,12 @@ import {
    removeItemFromSelection,
    selectSelectedItemIds,
 } from '~/features/media/slices/media-ui-state-slice';
+import { cn } from '~/utils/cn';
+import { Expand } from '~/components/icons';
 
 import ItemThumbnail from './ItemThumbnail';
 import ItemName from './ItemName';
-import { cn } from '~/utils/cn';
+import BackdropMediaPlayer from '~/features/media/components/BackdropMediaPlayer';
 
 export interface MediaGridItemProps {
    item: MediaItem;
@@ -20,6 +22,7 @@ export interface MediaGridItemProps {
 const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
    const dispatch = useAppDispatch();
    const selectedItemIds = useAppSelector(selectSelectedItemIds);
+   const [expanded, setExpanded] = useState(false);
 
    // The order in which the item was selected
    const selectOrder = useMemo(
@@ -32,6 +35,10 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
 
    const isSelected = selectOrder !== -1;
 
+   const handleExpand = () => {
+      setExpanded(true);
+   };
+
    const handleSelection = () => {
       const action =
          selectOrder === -1
@@ -40,7 +47,20 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
       dispatch(action);
    };
 
-   const selectBox = useMemo(
+   const expandElement = useMemo(
+      () => (
+         <div
+            className="absolute opacity-0 group-hover:opacity-100 duration-100 left-1 top-1 cursor-pointer w-4 h-4
+            flex items-center justify-center"
+            onClick={handleExpand}
+         >
+            <Expand />
+         </div>
+      ),
+      [],
+   );
+
+   const selectBoxElement = useMemo(
       () => (
          <div
             className={cn(
@@ -63,8 +83,15 @@ const MediaGridItem: FC<MediaGridItemProps> = ({ item }) => {
    return (
       <Box width="100%">
          <Box position="relative" className="group">
-            <ItemThumbnail src={item.thumbnailUrl} isSelected={isSelected} />
-            {selectBox}
+            <ItemThumbnail item={item} isSelected={isSelected} />
+            {expandElement}
+            {selectBoxElement}
+            {expanded && (
+               <BackdropMediaPlayer
+                  item={item}
+                  onClose={() => setExpanded(false)}
+               />
+            )}
          </Box>
          <ItemName item={item} isSelected={isSelected} />
       </Box>

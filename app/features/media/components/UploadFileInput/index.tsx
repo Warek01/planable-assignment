@@ -2,7 +2,6 @@ import {
    type ChangeEventHandler,
    type FC,
    memo,
-   useEffect,
    useMemo,
    useState,
 } from 'react';
