@@ -1,4 +1,9 @@
-import { type ChangeEventHandler, type FC, useState } from 'react';
+import {
+   type ChangeEventHandler,
+   type FC,
+   type KeyboardEventHandler,
+   useState,
+} from 'react';
 import { Box, Button, Flex, Text, TextField } from '@radix-ui/themes';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
@@ -25,6 +30,12 @@ const CreateFolderInput: FC = () => {
       setNewFolderName('');
    };
 
+   const handleKeyDown: KeyboardEventHandler<HTMLInputElement> = (event) => {
+      if (event.key === 'Enter') {
+         handleSubmit();
+      }
+   };
+
    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
       setNewFolderName(event.target.value);
    };
@@ -33,6 +44,7 @@ const CreateFolderInput: FC = () => {
       <Box>
          <Flex align="center" gap="1">
             <TextField.Root
+               onKeyDown={handleKeyDown}
                placeholder="Folder name"
                value={newFolderName}
                onChange={handleChange}
