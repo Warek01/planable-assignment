@@ -1,4 +1,4 @@
-import { type FC } from 'react';
+import { type FC, useEffect } from 'react';
 import { NavLink } from 'react-router';
 import { Box, Flex, Avatar, Text } from '@radix-ui/themes';
 
@@ -8,8 +8,20 @@ import {
    FilterList,
    FolderNavigation,
 } from '~/features/media/components';
+import { useAppDispatch } from '~/hooks/redux';
+import {
+   fetchFolders,
+   fetchItems,
+} from '~/features/media/slices/media-data-slice';
 
 const Sidebar: FC = () => {
+   const dispatch = useAppDispatch();
+
+   useEffect(() => {
+      dispatch(fetchItems());
+      dispatch(fetchFolders());
+   }, []);
+
    return (
       <Box pt="4" pb="8" pr="2" pl="4" height="100vh" maxHeight="100vh">
          <Flex height="100%" direction="column" gapY="8">

@@ -2,6 +2,7 @@ import {
    type ChangeEventHandler,
    type FC,
    memo,
+   useEffect,
    useMemo,
    useState,
 } from 'react';
@@ -61,6 +62,12 @@ const UploadFileInput: FC = () => {
       ...initialDormData,
    });
 
+   useEffect(() => {
+      if (selectedFolder) {
+         setFormData((fd) => ({ ...fd, folder: selectedFolder }));
+      }
+   }, [selectedFolder]);
+
    const handleChange: ChangeEventHandler<HTMLInputElement> = (event) => {
       setFormData({
          ...formData,
@@ -99,7 +106,7 @@ const UploadFileInput: FC = () => {
             <Flex direction="column" gapY="2" pt="5" pb="2">
                <FolderSelector
                   width="200px"
-                  selected={formData.folder}
+                  selected={formData.folder ?? selectedFolder!}
                   onSelect={(folder) =>
                      setFormData((fd) => ({ ...fd, folder }))
                   }

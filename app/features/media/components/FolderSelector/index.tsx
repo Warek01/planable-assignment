@@ -1,14 +1,15 @@
 import { type FC, memo } from 'react';
-import { Box, DropdownMenu, Flex, Text } from '@radix-ui/themes';
+import { Flex, Select, Text } from '@radix-ui/themes';
 
 import type { Folder } from '~/features/media/types/folder';
 import FolderIcon from '~/components/icons/Folder';
-import { FolderList } from '~/features/media/components';
 import { AppTooltip } from '~/components';
+import { useAppSelector } from '~/hooks/redux';
+import { selectFolders } from '~/features/media/slices/media-data-slice';
 
 export interface FolderSelectorProps {
    disabled?: boolean;
-   selected: Folder | undefined;
+   selected: Folder;
    onSelect: (folder: Folder) => void;
    tooltip?: string;
    width?: string;
@@ -21,36 +22,41 @@ const FolderSelector: FC<FolderSelectorProps> = ({
    tooltip,
    width = '150px',
 }) => {
+   const folders = useAppSelector(selectFolders);
+
    return (
-      <DropdownMenu.Root>
+      <Select.Root
+         value={selected.id}
+         onValueChange={(v) => onSelect(folders.find((f) => f.id === v)!)}
+      >
          <AppTooltip content={tooltip}>
-            <DropdownMenu.Trigger disabled={disabled}>
-               <button
-                  style={{ width }}
-                  className="bg-transparent px-3 py-1 rounded-md text-secondary border border-secondary/10 flex items-center
+            <Select.Trigger
+               disabled={disabled}
+               style={{ width }}
+               className="bg-transparent px-3 py-1 rounded-md text-secondary border border-secondary/10 flex items-center
                   justify-between cursor-pointer hover:border-secondary/20 duration-100 box-border"
-               >
-                  <Flex align="center" gap="2">
+            >
+               <Flex align="center" gap="2">
+                  <FolderIcon />
+                  <Text className="!leading-[22px]">
+                     {selected?.name ?? '-'}
+                  </Text>
+               </Flex>
+            </Select.Trigger>
+         </AppTooltip>
+         <Select.Content position="item-aligned">
+            {folders.map((folder) => (
+               <Select.Item value={folder.id} key={folder.id}>
+                  <Flex align="center" justify="start" gap="1">
                      <FolderIcon />
-                     <Text className="!leading-[22px]">
-                        {selected?.name ?? '-'}
+                     <Text className="text-ellipsis whitespace-nowrap overflow-hidden max-w-[150px]">
+                        {folder.name}
                      </Text>
                   </Flex>
-                  <DropdownMenu.TriggerIcon />
-               </button>
-            </DropdownMenu.Trigger>
-         </AppTooltip>
-         <DropdownMenu.Content className="!rounded-lg">
-            <Box
-               style={{
-                  width: `calc(${width} - 18px)`,
-                  maxWidth: `calc(${width} - 18px)`,
-               }}
-            >
-               <FolderList onSelect={onSelect} selected={selected} />
-            </Box>
-         </DropdownMenu.Content>
-      </DropdownMenu.Root>
+               </Select.Item>
+            ))}
+         </Select.Content>
+      </Select.Root>
    );
 };
 

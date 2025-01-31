@@ -6,7 +6,7 @@ import { Sidebar, Topbar } from '~/components';
 
 const AppLayout: FC = () => {
    return (
-      <Flex width="100vw" height="100vh">
+      <Flex maxWidth="100vw" height="100vh">
          <Box minWidth="232px" maxWidth="232px">
             <Box minWidth="232px" maxWidth="232px" position="fixed">
                <Sidebar />

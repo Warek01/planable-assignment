@@ -26,9 +26,9 @@ const FolderList: FC<FolderListProps> = ({
             <FolderItem
                droppable={droppable}
                onSelect={onSelect}
-               isSelected={folder === selected}
+               isSelected={folder.id === selected?.id}
                folder={folder}
-               key={folder.name}
+               key={folder.id}
             />
          ))}
       </Box>

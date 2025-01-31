@@ -28,7 +28,7 @@ const FolderItem: FC<FolderItemProps> = ({
       <div
          ref={setNodeRef}
          className={cn(
-            'duration-100 hover:bg-secondary/5 rounded-md overflow-hidden',
+            'duration-100 hover:bg-secondary/5 rounded-md overflow-hidden mb-1',
             isSelected && 'bg-secondary/5 hover:bg-secondary/10',
             isOver && 'bg-primary',
          )}
