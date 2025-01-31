@@ -112,7 +112,7 @@ const Topbar: FC = () => {
                   <FolderSelector
                      onSelect={handleFolderSelect}
                      disabled={!selectedItemIds.length}
-                     selected={selectedFolder}
+                     selected={selectedFolder!}
                      tooltip="Move items to"
                   />
                   <AppTooltip
