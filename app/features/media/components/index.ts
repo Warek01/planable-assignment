@@ -5,6 +5,7 @@ import FilterList from './FilterList';
 import FolderSelector from './FolderSelector';
 import FolderNavigation from './FolderNavigation';
 import UploadFileInput from './UploadFileInput';
+import FolderHero from './FolderHero';
 
 export {
    MediaGrid,
@@ -14,4 +15,5 @@ export {
    FolderSelector,
    FolderNavigation,
    UploadFileInput,
+   FolderHero,
 };

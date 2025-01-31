@@ -1,8 +1,8 @@
-import { type FC, useEffect } from 'react';
-import { Box, Heading } from '@radix-ui/themes';
+import { type FC, useEffect, useMemo } from 'react';
+import { Box } from '@radix-ui/themes';
 
 import { useAppDispatch, useAppSelector } from '~/hooks/redux';
-import { MediaGrid } from '~/features/media/components';
+import { FolderHero, MediaGrid } from '~/features/media/components';
 import { selectFolder } from '~/features/media/slices/media-data-slice';
 import {
    clearItemSelection,
@@ -27,17 +27,24 @@ const FolderPage: FC<Route.ComponentProps> = ({ params }) => {
       };
    }, [folderId]);
 
-   if (!folder) {
-      return (
-         <Box>
-            <Heading>No such folder {folderId}</Heading>
-         </Box>
-      );
-   }
+   const content = useMemo(() => {
+      if (!folder) {
+         return <FolderHero title="404 Folder not found" />;
+      }
+      if (!folder.itemIds.length) {
+         return (
+            <FolderHero
+               title="This folder is empty"
+               subtitle="Add images, videos and GIFs."
+            />
+         );
+      }
+      return <MediaGrid folder={folder} />;
+   }, [folder]);
 
    return (
-      <Box>
-         <MediaGrid folder={folder} />
+      <Box width="100%" minHeight="100%" position="relative">
+         {content}
       </Box>
    );
 };
