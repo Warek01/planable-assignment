@@ -109,7 +109,7 @@ export const selectSelectedItemIds = (state: RootState): string[] =>
 export const selectSelectedFolderId = (state: RootState): string | undefined =>
    state.mediaUiState.selectedFolderId;
 
-// Memorise with reselect expensive operations
+// Memorize with reselect expensive operations
 export const selectSelectedFolder = createSelector(
    [selectFolders, selectSelectedFolderId],
    (folders, selectedFolderId) =>

@@ -82,19 +82,15 @@ export const mediaDataSlice = createSlice({
       ) {
          const { folderId, itemIds } = action.payload;
 
-         // Remove from folder
-         state.folders = state.folders.map((folder) =>
-            folder.id === folderId
-               ? {
-                    ...folder,
-                    itemIds: folder.itemIds.filter(
-                       (id) => !itemIds.includes(id),
-                    ),
-                 }
-               : folder,
+         const folder = state.folders.find(
+            (stateFolder) => stateFolder.id === folderId,
          );
+         if (!folder) {
+            console.error(`[${deleteItems.name}] Folder ${folderId} not found`);
+            return;
+         }
 
-         // Remove from items list
+         folder.itemIds = folder.itemIds.filter((id) => !itemIds.includes(id));
          state.items = state.items.filter(
             (stateItem) => !itemIds.includes(stateItem.id),
          );
@@ -111,25 +107,30 @@ export const mediaDataSlice = createSlice({
       ) {
          const { itemIds, dstFolderId, srcFolderId } = action.payload;
 
-         state.folders = state.folders.map((folder) => {
-            // Remove from initial folder
-            if (folder.id === srcFolderId) {
-               return {
-                  ...folder,
-                  itemIds: folder.itemIds.filter((id) => !itemIds.includes(id)),
-               };
-            }
+         const srcFolder = state.folders.find(
+            (stateFolder) => stateFolder.id === srcFolderId,
+         );
+         const dstFolder = state.folders.find(
+            (stateFolder) => stateFolder.id === dstFolderId,
+         );
 
-            // Add to new folder
-            if (folder.id === dstFolderId) {
-               return {
-                  ...folder,
-                  itemIds: folder.itemIds.concat(itemIds),
-               };
-            }
+         if (!srcFolder) {
+            console.error(
+               `[${moveItems.name}] Source folder ${srcFolderId} not found`,
+            );
+            return;
+         }
+         if (!dstFolder) {
+            console.error(
+               `[${moveItems.name}] Destination folder ${dstFolderId} not found`,
+            );
+            return;
+         }
 
-            return folder;
-         });
+         srcFolder.itemIds = srcFolder.itemIds.filter(
+            (id) => !itemIds.includes(id),
+         );
+         dstFolder.itemIds = dstFolder.itemIds.concat(itemIds);
          setFoldersToLocalStorage(state.folders);
       },
       renameItem(
@@ -140,15 +141,12 @@ export const mediaDataSlice = createSlice({
          }>,
       ) {
          const { newName, itemId } = action.payload;
-
-         state.items = state.items.map((stateItem) =>
-            stateItem.id === itemId
-               ? {
-                    ...stateItem,
-                    name: newName,
-                 }
-               : stateItem,
-         );
+         const item = state.items.find((stateItem) => stateItem.id === itemId);
+         if (!item) {
+            console.error(`[${renameItem.name}] Item ${itemId} not found`);
+            return;
+         }
+         item.name = newName;
          setItemsToLocalStorage(state.items);
       },
       createFolder(
@@ -158,10 +156,15 @@ export const mediaDataSlice = createSlice({
          }>,
       ) {
          const { folderName } = action.payload;
-         if (state.folders.find((f) => f.name === folderName)) {
+         const folderExists = state.folders.find((f) => f.name === folderName);
+         if (folderExists) {
+            console.error(
+               `[${createFolder.name}] Folder ${folderName} already exists`,
+            );
             return;
          }
-         state.folders = state.folders.concat({
+         // I assume the props are already validated
+         state.folders.push({
             name: folderName,
             itemIds: [],
             id: uuid.v4(),
