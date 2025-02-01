@@ -104,4 +104,5 @@ by using folder IDs as keys.
 - Do more fine-grained conventional commits, as some of my commits are bulky and touch more than one functionality at a time.
 - Add linting.
 - Modify the mock file creator with an actual file upload, determine its media type based on MIME type.
-
+- Add loading states for components.
+- Add fancy UI elements for errors.

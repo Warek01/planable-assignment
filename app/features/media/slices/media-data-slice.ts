@@ -9,36 +9,12 @@ import * as uuid from 'uuid';
 import type { Folder } from '~/features/media/types/folder';
 import type { MediaItem } from '~/features/media/types/media-item';
 import type { RootState } from '~/store';
-import { mockFolders } from '~/mocks/folders';
-import { mockItems } from '~/mocks/items';
-
-// Mock storage
-const ITEMS_KEY = 'media-items';
-const FOLDERS_KEY = 'media-folders';
-
-const setFolders = (folders: Folder[]) =>
-   localStorage.setItem(FOLDERS_KEY, JSON.stringify(folders));
-
-const setItems = (items: MediaItem[]) =>
-   localStorage.setItem(ITEMS_KEY, JSON.stringify(items));
-
-export const fetchFolders = createAsyncThunk('media/fetch-folders', () => {
-   let foldersStr = localStorage.getItem(FOLDERS_KEY);
-   if (!foldersStr) {
-      setFolders(mockFolders);
-      return mockFolders;
-   }
-   return JSON.parse(foldersStr);
-});
-
-export const fetchItems = createAsyncThunk('media/fetch-items', () => {
-   let itemsStr = localStorage.getItem(ITEMS_KEY);
-   if (!itemsStr) {
-      setItems(mockItems);
-      return mockItems;
-   }
-   return JSON.parse(itemsStr);
-});
+import {
+   getFoldersFromLocalStorage,
+   getItemsFromLocalStorage,
+   setFoldersToLocalStorage,
+   setItemsToLocalStorage,
+} from '~/features/media/utils/media-storage';
 
 export interface MediaDataState {
    folders: Folder[];
@@ -52,31 +28,54 @@ const initialState: MediaDataState = {
 
 export const MEDIA_DATA_SLICE_NAME = 'media-data';
 
+// Mock storage, should be api calls instead, ideally RTK query
+export const fetchFolders = createAsyncThunk<Folder[]>(
+   `${MEDIA_DATA_SLICE_NAME}/fetch-folders`,
+   async () => {
+      return getFoldersFromLocalStorage();
+   },
+);
+
+export const fetchItems = createAsyncThunk<MediaItem[]>(
+   `${MEDIA_DATA_SLICE_NAME}/fetch-items`,
+   async () => {
+      return getItemsFromLocalStorage();
+   },
+);
+
+// Mock POST-ing new items
+export const addItems = createAsyncThunk<
+   MediaDataState,
+   {
+      items: MediaItem[];
+      folderId: string;
+   }
+>(`${MEDIA_DATA_SLICE_NAME}/add-items`, async ({ items, folderId }) => {
+   // I could also call getState but the props are readonly
+   let allItems = getItemsFromLocalStorage();
+   let allFolders = getFoldersFromLocalStorage();
+
+   allItems = allItems.concat(items);
+
+   // If folder not found ideally should throw and add new case for rejected thunk, skipping for simplicity
+   const folder = allFolders.find((folder) => folder.id === folderId)!;
+   folder.itemIds = folder.itemIds.concat(items.map((i) => i.id));
+
+   setItemsToLocalStorage(allItems);
+   setFoldersToLocalStorage(allFolders);
+
+   // In prod should return only new items and modify state on client instead of replacing the entire state
+   return {
+      items: allItems,
+      folders: allFolders,
+   };
+});
+
 export const mediaDataSlice = createSlice({
    initialState,
    name: MEDIA_DATA_SLICE_NAME,
    reducers: {
-      addItems(
-         state,
-         action: PayloadAction<{ items: MediaItem[]; folderId: string }>,
-      ) {
-         const { items, folderId } = action.payload;
-
-         // Add to folder
-         state.folders = state.folders.map((folder) =>
-            folder.id === folderId
-               ? {
-                    ...folder,
-                    itemIds: folder.itemIds.concat(items.map((i) => i.id)),
-                 }
-               : folder,
-         );
-
-         // Add to items list
-         state.items = state.items.concat(items);
-         setFolders(state.folders);
-         setItems(state.items);
-      },
+      // All these methods should be thunks as well in prod, with no side-effects
       deleteItems(
          state,
          action: PayloadAction<{ itemIds: string[]; folderId: string }>,
@@ -99,8 +98,8 @@ export const mediaDataSlice = createSlice({
          state.items = state.items.filter(
             (stateItem) => !itemIds.includes(stateItem.id),
          );
-         setFolders(state.folders);
-         setItems(state.items);
+         setFoldersToLocalStorage(state.folders);
+         setItemsToLocalStorage(state.items);
       },
       moveItems(
          state,
@@ -131,7 +130,7 @@ export const mediaDataSlice = createSlice({
 
             return folder;
          });
-         setFolders(state.folders);
+         setFoldersToLocalStorage(state.folders);
       },
       renameItem(
          state,
@@ -150,7 +149,7 @@ export const mediaDataSlice = createSlice({
                  }
                : stateItem,
          );
-         setItems(state.items);
+         setItemsToLocalStorage(state.items);
       },
       createFolder(
          state,
@@ -167,7 +166,7 @@ export const mediaDataSlice = createSlice({
             itemIds: [],
             id: uuid.v4(),
          });
-         setFolders(state.folders);
+         setFoldersToLocalStorage(state.folders);
       },
       deleteFolder(
          state,
@@ -179,16 +178,22 @@ export const mediaDataSlice = createSlice({
          state.folders = state.folders.filter(
             (folder) => folder.name !== folderName,
          );
-         setFolders(state.folders);
+         setFoldersToLocalStorage(state.folders);
       },
    },
    extraReducers: (builder) => {
+      // Skip errors and loading cases for simplicity
       builder
          .addCase(fetchFolders.fulfilled, (state, action) => {
             state.folders = action.payload;
          })
          .addCase(fetchItems.fulfilled, (state, action) => {
             state.items = action.payload;
+         })
+         .addCase(addItems.fulfilled, (state, action) => {
+            const { items, folders } = action.payload;
+            state.items = items;
+            state.folders = folders;
          });
    },
 });
@@ -197,7 +202,6 @@ export const mediaDataReducer = mediaDataSlice.reducer;
 export const {
    deleteItems,
    renameItem,
-   addItems,
    moveItems,
    createFolder,
    deleteFolder,
