@@ -16,6 +16,9 @@ import {
    setItemsToLocalStorage,
 } from '~/features/media/utils/media-storage';
 
+
+// In prod this should be normalized like this
+// folders: { byId: Record<string, Folder>, allIds: string[] } ...
 export interface MediaDataState {
    folders: Folder[];
    items: MediaItem[];
